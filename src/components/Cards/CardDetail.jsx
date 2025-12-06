@@ -128,45 +128,49 @@ export default function CardDetail() {
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto"
-      aria-labelledby="modal-title"
-      role="dialog"
-      aria-modal="true"
+      className="fixed inset-0 z-50 overflow-y-auto bg-ink/30 backdrop-blur-sm"
+      onClick={() => navigate('/')}
     >
       <div
-        className="fixed inset-0 bg-ink/30 backdrop-blur-sm transition-opacity"
-        onClick={() => navigate('/')}
-      />
+        className="min-h-screen flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Image Section - Full viewport height (minus some safe padding) */}
+        <div className="relative flex-shrink-0 h-[85vh] sm:h-[80vh]">
+          <img
+            src={card.image_url}
+            alt={card.title}
+            className="w-full h-full object-contain bg-black/90"
+          />
+          <Link
+            to="/"
+            className="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur rounded-full shadow-lg hover:bg-white transition text-ink"
+          >
+            <ArrowLeft size={24} />
+          </Link>
 
-      <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-        <div
-          className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-2xl border border-gray-100"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="relative">
-            <img
-              src={card.image_url}
-              alt={card.title}
-              className="w-full h-64 sm:h-96 object-cover"
-            />
-            <Link
-              to="/"
-              className="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur rounded-full shadow-lg hover:bg-white transition text-ink"
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="absolute top-4 right-4 p-2 bg-red-50/90 backdrop-blur rounded-full shadow-lg hover:bg-red-100 transition text-red-600 disabled:opacity-50"
+              title="Delete card"
             >
-              <ArrowLeft size={24} />
-            </Link>
+              <Trash2 size={24} />
+            </button>
+          )}
 
-            {isOwner && (
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="absolute top-4 right-4 p-2 bg-red-50/90 backdrop-blur rounded-full shadow-lg hover:bg-red-100 transition text-red-600 disabled:opacity-50"
-                title="Delete card"
-              >
-                <Trash2 size={24} />
-              </button>
-            )}
+          {/* Scroll indicator */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm font-sans flex flex-col items-center animate-bounce">
+            <span>{t('detail.scrollForDetails')}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </div>
+        </div>
+
+        {/* Details Section - White card below */}
+        <div className="bg-white rounded-t-2xl -mt-4 relative z-10 shadow-2xl border-t border-gray-100">
 
           <div className="p-8 sm:p-10">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-4">

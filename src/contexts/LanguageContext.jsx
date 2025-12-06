@@ -71,6 +71,7 @@ export const translations = {
             share: 'Share this Card',
             scanToView: 'Scan to view this card or download the QR code to print it.',
             downloadQr: 'Download QR Code',
+            scrollForDetails: 'Scroll for details',
         },
         player: {
             spotify: 'Listen on Spotify',
@@ -147,6 +148,7 @@ export const translations = {
             share: 'Bu Kartı Paylaş',
             scanToView: 'Bu kartı görüntülemek için taratın veya yazdırmak için QR kodunu indirin.',
             downloadQr: 'QR Kodunu İndir',
+            scrollForDetails: 'Detaylar için kaydırın',
         },
         player: {
             spotify: 'Spotify\'da Dinle',
