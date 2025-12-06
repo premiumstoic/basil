@@ -18,11 +18,12 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
 
   if (!audioSource) return null;
 
-  // Check if it's a streaming URL (Spotify, YouTube, SoundCloud)
+  // Check if it's a streaming URL (Spotify, YouTube, YouTube Music, SoundCloud)
   const isStreamingUrl = musicUrl && (
     isFromDomain(musicUrl, 'spotify.com') ||
     isFromDomain(musicUrl, 'youtube.com') ||
     isFromDomain(musicUrl, 'youtu.be') ||
+    isFromDomain(musicUrl, 'music.youtube.com') ||
     isFromDomain(musicUrl, 'soundcloud.com')
   );
 
@@ -46,6 +47,33 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
           ></iframe>
         </div>
       );
+    }
+
+    // Handle YouTube Music embeds (convert to regular YouTube embed)
+    if (musicUrl.includes('music.youtube.com')) {
+      // Extract video ID from YouTube Music URL
+      const urlParams = new URLSearchParams(new URL(musicUrl).search);
+      const videoId = urlParams.get('v');
+
+      if (videoId) {
+        return (
+          <div className="bg-gradient-to-br from-green-50 to-purple-50 rounded-xl p-4">
+            <div className="flex items-center mb-3">
+              <Music size={20} className="text-purple-500 mr-2" />
+              <span className="font-medium text-gray-700">YouTube Music</span>
+            </div>
+            <iframe
+              width="100%"
+              height="200"
+              src={`https://www.youtube.com/embed/${videoId}`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="rounded-lg"
+            ></iframe>
+          </div>
+        );
+      }
     }
 
     // Handle YouTube embeds
