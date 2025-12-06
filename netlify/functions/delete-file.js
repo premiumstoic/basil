@@ -1,7 +1,7 @@
 // netlify/functions/delete-file.js
 const { getStore } = require('@netlify/blobs');
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -20,7 +20,7 @@ exports.handler = async (event) => {
       };
     }
 
-    const store = getStore(bucket);
+    const store = getStore({ name: bucket, context });
     await store.delete(fileName);
 
     return {

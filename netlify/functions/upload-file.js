@@ -2,7 +2,7 @@
 const { getStore } = require('@netlify/blobs');
 const multipart = require('parse-multipart-data');
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -41,8 +41,8 @@ exports.handler = async (event) => {
     const fileName = fileNamePart.data.toString();
     const fileData = filePart.data;
 
-    // Store in Netlify Blobs
-    const store = getStore(bucket);
+    // Store in Netlify Blobs (context provides auto credentials)
+    const store = getStore({ name: bucket, context });
     await store.set(fileName, fileData, {
       metadata: {
         contentType: filePart.type,
