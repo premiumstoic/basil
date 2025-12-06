@@ -95,8 +95,14 @@ export default function CardDetail() {
   }
 
   return (
-    <div className="fixed inset-0 bg-ink/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl max-w-2xl w-full my-8 shadow-2xl border border-gray-100 overflow-hidden">
+    <div
+      className="fixed inset-0 bg-ink/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
+      onClick={() => navigate('/')}
+    >
+      <div
+        className="bg-white rounded-xl max-w-2xl w-full my-8 shadow-2xl border border-gray-100 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="relative">
           <img
             src={card.image_url}
