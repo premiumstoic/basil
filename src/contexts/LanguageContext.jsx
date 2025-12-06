@@ -96,7 +96,7 @@ export const translations = {
         },
         addCard: {
             pageTitle: 'Reyhan İçin Kart Ekle',
-            pageDesc: 'Reyhan ile kültürel bir an paylaş',
+            pageDesc: 'Reyhan ile bir an paylaş',
             labels: {
                 illustration: 'İllüstrasyon',
                 chooseImage: 'Resim seç',
@@ -129,7 +129,7 @@ export const translations = {
             noCards: 'Reyhan için henüz kart yok',
             noCardsDesc: "Reyhan'a ilk kartı hediye ederek koleksiyonuna başla!",
             title: "Reyhan'ın Kart Koleksiyonu",
-            desc: 'Reyhan için özel seçilmiş kültürel anlar',
+            desc: 'Reyhan için özel seçilmiş anlar',
         },
         card: {
             hasMusic: 'Müzik var',
