@@ -13,7 +13,24 @@ export const useCards = () => {
       const result = await query(
         'SELECT * FROM cards ORDER BY created_at DESC'
       );
-      setCards(result || []);
+
+      const allCards = result || [];
+
+      // Keep first 3 most recent cards, shuffle the rest
+      if (allCards.length > 3) {
+        const recent = allCards.slice(0, 3);
+        const rest = allCards.slice(3);
+
+        // Fisher-Yates shuffle for the rest
+        for (let i = rest.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [rest[i], rest[j]] = [rest[j], rest[i]];
+        }
+
+        setCards([...recent, ...rest]);
+      } else {
+        setCards(allCards);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
