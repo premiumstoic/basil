@@ -5,40 +5,42 @@ A React web app for sharing cultural moments through kawaii-illustrated cards wi
 ## Features
 
 - 🎨 Beautiful card-based UI with kawaii aesthetic
-- 🔐 User authentication (signup/login)
+- 🔐 User authentication (signup/login via Netlify Identity)
 - 📸 Image upload for card illustrations
 - 🎵 Music support (Spotify/YouTube URLs or MP3 uploads)
 - 🗑️ Delete your own cards
 - 📱 Mobile-responsive design
 - 🔗 QR code friendly (access cards via `?id=XXX`)
-- ⚡ Real-time updates
 
 ## Tech Stack
 
 - **Frontend**: React + Vite
 - **Styling**: Tailwind CSS
-- **Backend**: Supabase (Auth, Database, Storage)
+- **Database**: Neon (Serverless PostgreSQL)
+- **Authentication**: Netlify Identity
+- **Storage**: Netlify Blobs
 - **Routing**: React Router
 - **Icons**: Lucide React
+- **Hosting**: Netlify (optimized for Netlify deployment)
 
 ## Setup Instructions
 
-### 1. Create Supabase Project
+### 1. Create Neon Database
 
-1. Go to [supabase.com](https://supabase.com)
+1. Go to [neon.tech](https://neon.tech)
 2. Create a new project
-3. Wait for the database to be ready
-4. Go to Project Settings > API to get your credentials
+3. Create a database (or use the default database)
+4. Copy your connection string (it looks like `postgresql://user:password@ep-xxx.neon.tech/dbname?sslmode=require`)
 
-### 2. Set Up Database
+### 2. Set Up Database Schema
 
-Go to SQL Editor in Supabase and run:
+Connect to your Neon database and run:
 
 ```sql
 -- Create cards table
 CREATE TABLE cards (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   image_url TEXT NOT NULL,
@@ -50,83 +52,30 @@ CREATE TABLE cards (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enable RLS
-ALTER TABLE cards ENABLE ROW LEVEL SECURITY;
-
--- Public read access
-CREATE POLICY "Anyone can view cards"
-  ON cards FOR SELECT
-  TO public
-  USING (true);
-
--- Authenticated users can insert
-CREATE POLICY "Authenticated users can insert cards"
-  ON cards FOR INSERT
-  TO authenticated
-  WITH CHECK (auth.uid() = user_id);
-
--- Users can update their own cards
-CREATE POLICY "Users can update own cards"
-  ON cards FOR UPDATE
-  TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
-
--- Users can delete their own cards
-CREATE POLICY "Users can delete own cards"
-  ON cards FOR DELETE
-  TO authenticated
-  USING (auth.uid() = user_id);
-
 -- Create indexes
 CREATE INDEX cards_card_id_idx ON cards(card_id);
 CREATE INDEX cards_user_id_idx ON cards(user_id);
 CREATE INDEX cards_category_idx ON cards(category);
 ```
 
-### 3. Set Up Storage
-
-In Supabase Dashboard → Storage:
-
-1. Create bucket: `card-images` (make it public)
-2. Create bucket: `card-music` (make it public)
-
-For each bucket, set up a policy:
-
-```sql
--- Allow public read access
-CREATE POLICY "Public Access"
-  ON storage.objects FOR SELECT
-  USING ( bucket_id = 'card-images' );
-
--- Allow authenticated users to upload
-CREATE POLICY "Authenticated users can upload"
-  ON storage.objects FOR INSERT
-  WITH CHECK (
-    bucket_id = 'card-images' AND
-    auth.role() = 'authenticated'
-  );
-
--- Repeat for 'card-music' bucket
-```
-
-### 4. Install Dependencies
+### 3. Install Dependencies
 
 ```bash
-# Clone or create the project
 npm install
 ```
 
-### 5. Environment Variables
+### 4. Environment Variables
 
 Create a `.env` file in the root:
 
 ```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+VITE_NEON_DATABASE_URL=postgresql://user:password@ep-xxx.neon.tech/dbname?sslmode=require
+VITE_NETLIFY_SITE_URL=https://your-site.netlify.app
 ```
 
-### 6. Run Development Server
+### 5. Run Development Server
+
+For local development:
 
 ```bash
 npm run dev
@@ -134,39 +83,65 @@ npm run dev
 
 Visit `http://localhost:5173`
 
-### 7. Build for Production
+**Note**: Some features (authentication, file storage) require Netlify Functions and will only work when deployed to Netlify or running with Netlify CLI:
 
 ```bash
-npm run build
+# Install Netlify CLI globally
+npm install -g netlify-cli
+
+# Run with Netlify Dev
+netlify dev
 ```
 
-The `dist` folder will contain your production build.
+### 6. Deploy to Netlify
 
-### 8. Deploy to Netlify
-
-#### Option A: Drag & Drop
-
-1. Run `npm run build`
-2. Drag the `dist` folder to [Netlify](https://app.netlify.com/drop)
-3. Add environment variables in Site Settings
-
-#### Option B: GitHub Integration
+#### Option A: GitHub Integration (Recommended)
 
 1. Push your code to GitHub
-2. Connect repository in Netlify
-3. Set build command: `npm run build`
-4. Set publish directory: `dist`
-5. Add environment variables
+2. Go to [Netlify](https://app.netlify.com)
+3. Click "New site from Git"
+4. Connect your GitHub repository
+5. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+6. Add environment variables:
+   - `VITE_NEON_DATABASE_URL`: Your Neon database connection string
+   - `VITE_NETLIFY_SITE_URL`: Your Netlify site URL (e.g., https://your-site.netlify.app)
+7. Deploy!
 
-**Important**: Add your environment variables in Netlify:
-- Go to Site Settings → Environment Variables
-- Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+#### Option B: Netlify CLI
+
+```bash
+# Login to Netlify
+netlify login
+
+# Initialize site
+netlify init
+
+# Deploy
+netlify deploy --prod
+```
+
+### 7. Enable Netlify Identity
+
+After deploying to Netlify:
+
+1. Go to your site dashboard on Netlify
+2. Navigate to Site Settings → Identity
+3. Click "Enable Identity"
+4. Under Registration preferences, choose "Open" or "Invite only"
+5. Under External providers (optional), you can enable Google, GitHub, etc.
+6. Under Emails, customize the email templates if needed
+
+### 8. Configure Site URL
+
+Make sure to update the `VITE_NETLIFY_SITE_URL` environment variable with your actual Netlify site URL after deployment.
 
 ## Usage
 
 ### For Users
 
-1. **Sign Up**: Create an account with email/password
+1. **Sign Up**: Click "Sign Up" to create an account (uses Netlify Identity)
 2. **Add Cards**: Click "Add Card" to create a new cultural card
    - Upload a kawaii illustration
    - Add title and description
@@ -179,7 +154,7 @@ The `dist` folder will contain your production build.
 Each card has a unique ID (e.g., `ABC123`). The URL format is:
 
 ```
-https://your-domain.netlify.app/?id=ABC123
+https://your-site.netlify.app/?id=ABC123
 ```
 
 You can:
@@ -195,7 +170,7 @@ You can:
 
 **Option 2: Upload MP3**
 - Upload your own MP3 file
-- Maximum file size depends on Supabase storage limits
+- Files are stored in Netlify Blobs
 
 ## Project Structure
 
@@ -209,59 +184,63 @@ basil/
 │   │   ├── Layout/         # Navbar
 │   │   └── Music/          # Audio player
 │   ├── hooks/
-│   │   ├── useAuth.js      # Authentication logic
-│   │   └── useCards.js     # Card CRUD operations
+│   │   ├── useAuth.js      # Authentication logic (Netlify Identity)
+│   │   └── useCards.js     # Card CRUD operations (Neon)
 │   ├── lib/
-│   │   └── supabase.js     # Supabase client
+│   │   ├── neon.js         # Neon database client
+│   │   ├── auth.js         # Netlify Identity helpers
+│   │   └── storage.js      # Netlify Blobs helpers
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
+├── netlify/
+│   └── functions/          # Netlify Functions for file upload/delete
 ├── .env
+├── .env.example
 ├── package.json
+├── netlify.toml
 └── README.md
 ```
 
-## Customization
+## Differences from Supabase Version
 
-### Change Colors
+This version uses Neon and Netlify services instead of Supabase:
 
-Edit `tailwind.config.js` to customize the color scheme. Current theme uses pink/purple.
-
-### Add Categories
-
-Categories are optional text fields. You can add a dropdown by modifying `AddCardForm.jsx`:
-
-```jsx
-const CATEGORIES = ['Film', 'Literature', 'Art', 'Music', 'Philosophy'];
-```
-
-### Generate QR Codes in App
-
-Install the QR code library:
-
-```bash
-npm install qrcode
-```
-
-Add a QR code generator component to display QR codes for each card.
+- **Database**: Neon (serverless PostgreSQL) instead of Supabase Database
+- **Authentication**: Netlify Identity instead of Supabase Auth
+- **Storage**: Netlify Blobs instead of Supabase Storage
+- **Real-time**: Removed (Neon doesn't have built-in real-time; manual refresh needed)
+- **Row Level Security**: Not available in Neon (implement in application logic)
 
 ## Troubleshooting
 
-### Images not uploading
+### Images/Music not uploading
 
-- Check that storage buckets are created and public
-- Verify RLS policies allow authenticated users to insert
+- Ensure you're running on Netlify (deployed or via `netlify dev`)
+- Check that Netlify Functions are working
+- Verify Netlify Blobs is enabled for your site
 
 ### Cards not showing
 
 - Check browser console for errors
-- Verify Supabase credentials in `.env`
-- Ensure RLS policy allows public SELECT
+- Verify Neon database connection string in environment variables
+- Ensure the cards table exists in your Neon database
 
 ### Authentication issues
 
-- Check Supabase email settings
-- Verify SITE_URL in Supabase auth settings
+- Make sure Netlify Identity is enabled in your site settings
+- Check that you're accessing the site via the correct URL
+- For local development, use `netlify dev` instead of `npm run dev`
+
+### Local Development
+
+For full functionality in local development, use:
+
+```bash
+netlify dev
+```
+
+This runs the Vite dev server with Netlify Functions support.
 
 ## Contributing
 

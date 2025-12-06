@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Upload, Music as MusicIcon, Link as LinkIcon, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCards } from '../../hooks/useCards';
-import { uploadImage, uploadAudio } from '../../lib/supabase';
+import { uploadImage, uploadAudio } from '../../lib/storage';
 
 export default function AddCardForm() {
   const { user } = useAuth();
