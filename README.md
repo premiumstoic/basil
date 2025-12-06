@@ -104,10 +104,21 @@ netlify dev
 5. Configure build settings:
    - Build command: `npm run build`
    - Publish directory: `dist`
-6. Add environment variables:
-   - `VITE_NEON_DATABASE_URL`: Your Neon database connection string
-   - `VITE_NETLIFY_SITE_URL`: Your Netlify site URL (e.g., https://your-site.netlify.app)
+6. **⚠️ IMPORTANT: Add environment variables BEFORE deploying:**
+   - Go to **Site Settings → Environment Variables** (or **Build & Deploy → Environment**)
+   - Click "Add a variable" and add:
+     - Key: `VITE_NEON_DATABASE_URL`
+     - Value: Your Neon database connection string (e.g., `postgresql://user:password@ep-xxx.neon.tech/dbname?sslmode=require`)
+     - Scope: Select "All deploy contexts" or at least "Production"
+   - Add another variable:
+     - Key: `VITE_NETLIFY_SITE_URL`
+     - Value: Your Netlify site URL (you can use a placeholder initially, like `https://your-app-name.netlify.app`, and update it after deployment)
+     - Scope: Select "All deploy contexts" or at least "Production"
 7. Deploy!
+8. After first deployment, update `VITE_NETLIFY_SITE_URL` with your actual Netlify URL if you used a placeholder
+9. **⚠️ CRITICAL: If you update environment variables after deployment, you MUST trigger a new deploy with "Clear cache and deploy site"** - environment variables are baked into the build, so changing them requires rebuilding
+
+**Note:** Vite requires environment variables at build time, not runtime. If you see "Neon database is not configured" error, check the Troubleshooting section.
 
 #### Option B: Netlify CLI
 
@@ -220,11 +231,39 @@ This version uses Neon and Netlify services instead of Supabase:
 - Check that Netlify Functions are working
 - Verify Netlify Blobs is enabled for your site
 
-### Cards not showing
+### "Error loading cards: Neon database is not configured" on Netlify
+
+This error means the `VITE_NEON_DATABASE_URL` environment variable was not available during the build process. Vite bakes environment variables into the JavaScript bundle at build time, so they must be configured correctly in Netlify.
+
+**Solution:**
+
+1. **Check Environment Variables in Netlify:**
+   - Go to your site in Netlify Dashboard
+   - Navigate to **Site Settings → Environment Variables** (or **Build & Deploy → Environment**)
+   - Verify that `VITE_NEON_DATABASE_URL` is set with your full Neon connection string
+   - Make sure it's scoped for **"All deploy contexts"** or at least **"Production"**
+
+2. **Trigger a New Deploy:**
+   - After adding/updating the environment variable, trigger a new deployment
+   - Go to **Deploys → Trigger deploy → Clear cache and deploy site**
+   - This ensures the new environment variable is used during the build
+
+3. **Verify the Variable Format:**
+   - The connection string should look like: `postgresql://user:password@ep-xxx.neon.tech/dbname?sslmode=require`
+   - Copy it exactly from your Neon dashboard (don't add quotes or extra spaces)
+
+4. **Check Build Logs:**
+   - In Netlify, go to your latest deploy and check the build logs
+   - Look for any warnings about environment variables
+   - The build should complete successfully
+
+**Note:** Unlike traditional server-side apps, Vite apps require environment variables at **build time**, not runtime. Simply setting them after deployment won't work - you must rebuild.
+
+### Cards not showing (other reasons)
 
 - Check browser console for errors
-- Verify Neon database connection string in environment variables
 - Ensure the cards table exists in your Neon database
+- Verify database schema matches the required structure (see Setup Instructions)
 
 ### Authentication issues
 
