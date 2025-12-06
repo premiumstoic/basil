@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useCards } from '../../hooks/useCards';
+import { useLanguage } from '../../contexts/LanguageContext';
 import AudioPlayer from '../Music/AudioPlayer';
 
 export default function CardDetail() {
   const [searchParams] = useSearchParams();
   const cardId = searchParams.get('id');
   const { getCardById } = useCards();
+  const { t } = useLanguage();
 
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,10 +42,10 @@ export default function CardDetail() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-2xl p-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading card...</p>
+      <div className="fixed inset-0 bg-ink/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white rounded-xl p-8 shadow-xl">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 font-sans">{t('detail.loading')}</p>
         </div>
       </div>
     );
@@ -51,17 +53,17 @@ export default function CardDetail() {
 
   if (error) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl p-8 max-w-md">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Card Not Found</h2>
-          <p className="text-gray-600 mb-6">
-            The card you're looking for doesn't exist or has been removed.
+      <div className="fixed inset-0 bg-ink/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl p-8 max-w-md shadow-xl border border-gray-100">
+          <h2 className="text-2xl font-serif font-semibold text-red-600 mb-4">{t('detail.notFound')}</h2>
+          <p className="text-gray-600 mb-6 font-sans">
+            {t('detail.notFoundDesc')}
           </p>
           <Link
             to="/"
-            className="block w-full py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition text-center"
+            className="block w-full py-3 bg-ink text-white rounded-lg hover:bg-gray-800 transition text-center font-sans font-medium"
           >
-            Back to All Cards
+            {t('detail.backToHome')}
           </Link>
         </div>
       </div>
@@ -69,46 +71,49 @@ export default function CardDetail() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl max-w-2xl w-full my-8 shadow-2xl">
+    <div className="fixed inset-0 bg-ink/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-xl max-w-2xl w-full my-8 shadow-2xl border border-gray-100 overflow-hidden">
         <div className="relative">
           <img
             src={card.image_url}
             alt={card.title}
-            className="w-full h-64 sm:h-96 object-cover rounded-t-2xl"
+            className="w-full h-64 sm:h-96 object-cover"
           />
           <Link
             to="/"
-            className="absolute top-4 left-4 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition"
+            className="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur rounded-full shadow-lg hover:bg-white transition text-ink"
           >
-            <ArrowLeft size={24} className="text-gray-700" />
+            <ArrowLeft size={24} />
           </Link>
         </div>
 
-        <div className="p-6 sm:p-8">
-          <div className="flex items-start justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">{card.title}</h1>
+        <div className="p-8 sm:p-10">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-4">
+            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink tracking-tight leading-tight">{card.title}</h1>
             {card.category && (
-              <span className="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-sm">
+              <span className="self-start px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-sans font-medium border border-purple-100 whitespace-nowrap">
                 {card.category}
               </span>
             )}
           </div>
 
-          <p className="text-gray-700 text-lg leading-relaxed mb-6 whitespace-pre-wrap">
+          <p className="text-gray-800 text-lg leading-relaxed mb-8 whitespace-pre-wrap font-serif">
             {card.description}
           </p>
 
           {(card.music_url || card.music_file_url) && (
-            <AudioPlayer
-              musicUrl={card.music_url}
-              musicFileUrl={card.music_file_url}
-              title={card.title}
-            />
+            <div className="mb-8">
+              <AudioPlayer
+                musicUrl={card.music_url}
+                musicFileUrl={card.music_file_url}
+                title={card.title}
+              />
+            </div>
           )}
 
-          <div className="mt-6 pt-6 border-t border-gray-200 text-sm text-gray-500">
-            Card ID: <span className="font-mono font-semibold">{card.card_id}</span>
+          <div className="pt-6 border-t border-gray-100 text-xs text-gray-400 font-mono flex justify-between items-center">
+            <span>ID: {card.card_id}</span>
+            <span>Reyhanlı Kartlar Collection</span>
           </div>
         </div>
       </div>

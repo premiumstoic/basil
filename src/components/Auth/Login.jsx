@@ -2,37 +2,42 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function Login() {
   const { signIn, user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If already logged in, redirect to home
     if (user) {
       navigate('/');
     } else {
-      // Open login modal immediately
       signIn();
     }
   }, [user, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-paper px-4 py-12">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-sm border border-gray-100 p-8 sm:p-12 text-center">
         <div className="mb-8">
-          <span className="text-5xl">🌸</span>
-          <h2 className="mt-4 text-3xl font-bold text-gray-900">Welcome Back</h2>
-          <p className="mt-2 text-gray-600">
-            The login modal should open automatically. If it doesn't, please refresh the page.
+          <div className="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-4xl">🌿</span>
+          </div>
+          <h2 className="text-3xl font-serif font-bold text-ink mb-3 tracking-tight">{t('login.welcomeTitle')}</h2>
+          <p className="text-gray-600 font-sans leading-relaxed">
+            {t('login.welcomeDesc')}
           </p>
         </div>
         <button
           onClick={signIn}
-          className="w-full py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition font-medium"
+          className="w-full py-3.5 bg-ink text-white rounded-lg hover:bg-gray-800 transition font-sans font-medium shadow-md hover:shadow-lg transform active:scale-[0.99] duration-200"
         >
-          Open Login
+          {t('login.openButton')}
         </button>
+        <div className="mt-8 pt-6 border-t border-gray-100 text-xs text-gray-400 font-sans uppercase tracking-widest">
+          Reyhanlı Kartlar
+        </div>
       </div>
     </div>
   );

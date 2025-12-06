@@ -14,7 +14,7 @@ function ProtectedRoute({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
       </div>
     );
   }
@@ -34,26 +34,30 @@ function Home() {
   );
 }
 
+import { LanguageProvider } from './contexts/LanguageContext';
+
 function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route
-            path="/add"
-            element={
-              <ProtectedRoute>
-                <AddCardForm />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <div className="min-h-screen bg-paper text-ink transition-colors duration-300">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route
+              path="/add"
+              element={
+                <ProtectedRoute>
+                  <AddCardForm />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }
 

@@ -4,23 +4,25 @@ import { Link } from 'react-router-dom';
 import { Trash2, Music } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCards } from '../../hooks/useCards';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function CardItem({ card }) {
   const { user } = useAuth();
   const { deleteCard } = useCards();
+  const { t } = useLanguage();
   const [deleting, setDeleting] = useState(false);
 
   const isOwner = user?.id === card.user_id;
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to delete this card?')) return;
+    if (!confirm(t('card.deleteConfirm'))) return;
 
     setDeleting(true);
     try {
       await deleteCard(card.id);
     } catch (err) {
-      alert('Error deleting card: ' + err.message);
+      alert(t('card.deleteError') + err.message);
     } finally {
       setDeleting(false);
     }
@@ -29,51 +31,56 @@ export default function CardItem({ card }) {
   return (
     <Link
       to={`/?id=${card.card_id}`}
-      className="group relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+      className="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-purple-200 flex flex-col h-full"
     >
-      <div className="aspect-square overflow-hidden bg-gray-100">
+      <div className="aspect-[4/3] overflow-hidden bg-gray-50 relative">
         <img
           src={card.image_url}
           alt={card.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
       </div>
 
-      <div className="p-4">
-        <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
+      <div className="p-5 flex flex-col flex-grow">
+        <div className="flex justify-between items-start gap-2 mb-2">
+          {card.category && (
+            <span className="inline-block px-2 py-0.5 bg-purple-50 text-purple-700 text-[10px] uppercase tracking-wider font-sans font-bold rounded-sm border border-purple-100">
+              {card.category}
+            </span>
+          )}
+          {(card.music_url || card.music_file_url) && (
+            <Music size={14} className="text-purple-400" />
+          )}
+        </div>
+
+        <h3 className="font-serif font-bold text-xl text-ink mb-2 line-clamp-2 leading-tight group-hover:text-purple-700 transition-colors">
           {card.title}
         </h3>
-        <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+
+        <p className="text-sm text-gray-600 line-clamp-3 mb-4 font-sans leading-relaxed flex-grow">
           {card.description}
         </p>
 
-        {card.category && (
-          <span className="inline-block px-2 py-1 bg-pink-100 text-pink-600 text-xs rounded-full">
-            {card.category}
-          </span>
-        )}
-
-        {(card.music_url || card.music_file_url) && (
-          <div className="mt-2 flex items-center text-pink-500 text-sm">
-            <Music size={16} className="mr-1" />
-            <span>Has music</span>
-          </div>
-        )}
+        <div className="pt-4 border-t border-gray-50 text-xs text-gray-400 font-mono flex justify-between items-center mt-auto">
+          <span>#{card.card_id}</span>
+          {(card.music_url || card.music_file_url) && (
+            <span className="text-purple-500 font-sans font-medium flex items-center">
+              {t('card.hasMusic')}
+            </span>
+          )}
+        </div>
       </div>
 
       {isOwner && (
         <button
           onClick={handleDelete}
           disabled={deleting}
-          className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition opacity-0 group-hover:opacity-100 disabled:opacity-50"
+          className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur text-red-500 rounded-full shadow-sm hover:bg-red-50 transition opacity-0 group-hover:opacity-100 disabled:opacity-50 z-10"
         >
           <Trash2 size={16} />
         </button>
       )}
-
-      <div className="absolute bottom-3 right-3 px-2 py-1 bg-gray-900 bg-opacity-75 text-white text-xs rounded">
-        ID: {card.card_id}
-      </div>
     </Link>
   );
 }

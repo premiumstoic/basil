@@ -5,10 +5,12 @@ import { Upload, Music as MusicIcon, Link as LinkIcon, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCards } from '../../hooks/useCards';
 import { uploadImage, uploadAudio } from '../../lib/storage';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function AddCardForm() {
   const { user } = useAuth();
   const { addCard, generateCardId } = useCards();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
@@ -44,7 +46,7 @@ export default function AddCardForm() {
 
     try {
       if (!image) {
-        throw new Error('Please upload an image');
+        throw new Error(t('addCard.errors.noImage'));
       }
 
       // Upload image
@@ -78,31 +80,34 @@ export default function AddCardForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 py-12 px-4">
+    <div className="min-h-screen bg-paper py-16 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Add New Card</h1>
-          <p className="text-gray-600 mb-8">Share a cultural moment with your friends</p>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 sm:p-10">
+          <h1 className="text-4xl font-serif font-medium text-ink mb-3 tracking-tight">{t('addCard.pageTitle')}</h1>
+          <p className="text-gray-600 mb-10 font-sans">{t('addCard.pageDesc')}</p>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-              {error}
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm flex items-center">
+              <span className="mr-2">⚠️</span> {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Image Upload */}
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Image Upload Section */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Illustration *
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+                {t('addCard.labels.illustration')} *
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-pink-500 transition">
+              <div
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${imagePreview ? 'border-purple-200 bg-purple-50/30' : 'border-gray-200 hover:border-purple-400'
+                  }`}
+              >
                 {imagePreview ? (
-                  <div className="relative">
+                  <div className="relative inline-block">
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="max-h-64 mx-auto rounded-lg"
+                      className="max-h-64 rounded-lg shadow-sm"
                     />
                     <button
                       type="button"
@@ -110,112 +115,125 @@ export default function AddCardForm() {
                         setImage(null);
                         setImagePreview(null);
                       }}
-                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      className="absolute -top-3 -right-3 p-1.5 bg-white text-gray-500 rounded-full shadow-md hover:text-red-600 border border-gray-100 transition"
                     >
                       <X size={16} />
                     </button>
                   </div>
                 ) : (
-                  <div>
-                    <Upload size={48} className="mx-auto text-gray-400 mb-2" />
-                    <label className="cursor-pointer text-pink-600 hover:text-pink-700 font-medium">
-                      Choose an image
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                      />
-                    </label>
+                  <div className="space-y-4 py-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 text-gray-400 mb-2">
+                      <Upload size={32} />
+                    </div>
+                    <div>
+                      <label className="cursor-pointer">
+                        <span className="px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:border-purple-400 hover:text-purple-700 transition font-medium shadow-sm inline-block">
+                          {t('addCard.buttons.upload')}
+                        </span>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          required
+                        />
+                      </label>
+                      <p className="mt-3 text-sm text-gray-500 font-sans">PNG, JPG, GIF up to 5MB</p>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Title */}
+            {/* Title Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title *
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+                {t('addCard.labels.title')} *
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="e.g., Miyazaki's Wind Philosophy"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white transition font-serif text-lg text-ink placeholder-gray-400"
+                placeholder={t('addCard.placeholders.title')}
                 required
               />
             </div>
 
-            {/* Description */}
+            {/* Description Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+                {t('addCard.labels.description')} *
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                rows={5}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="Share your thoughts and insights..."
+                rows={4}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white transition font-serif text-lg text-ink placeholder-gray-400 resize-none leading-relaxed"
+                placeholder={t('addCard.placeholders.description')}
                 required
               />
             </div>
 
-            {/* Category */}
+            {/* Category Select */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category (optional)
+              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+                {t('addCard.labels.category')}
               </label>
-              <input
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                placeholder="e.g., Film, Literature, Art, Music"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  list="categories"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white transition font-sans text-gray-700"
+                  placeholder={t('addCard.placeholders.category')}
+                />
+                <datalist id="categories">
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat} />
+                  ))}
+                </datalist>
+              </div>
             </div>
 
             {/* Music Section */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Add Music (optional)
+            <div className="pt-6 border-t border-gray-100">
+              <label className="block text-sm font-semibold text-gray-700 mb-4 tracking-wide uppercase flex items-center">
+                <Music size={18} className="mr-2 text-purple-600" />
+                {t('addCard.labels.music')}
               </label>
-              <div className="flex gap-3 mb-4">
+
+              <div className="flex space-x-4 mb-6">
                 <button
                   type="button"
                   onClick={() => setMusicType('none')}
-                  className={`flex-1 py-2 px-4 rounded-lg border-2 transition ${
-                    musicType === 'none'
-                      ? 'border-pink-500 bg-pink-50 text-pink-700'
-                      : 'border-gray-300 hover:border-gray-400'
-                  }`}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition text-sm ${musicType === 'none'
+                    ? 'bg-gray-800 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
                 >
-                  No Music
+                  {t('addCard.buttons.noMusic')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setMusicType('url')}
-                  className={`flex-1 py-2 px-4 rounded-lg border-2 transition ${
-                    musicType === 'url'
-                      ? 'border-pink-500 bg-pink-50 text-pink-700'
-                      : 'border-gray-300 hover:border-gray-400'
-                  }`}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition text-sm ${musicType === 'url'
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
                 >
-                  <LinkIcon size={16} className="inline mr-1" />
-                  URL
+                  {t('addCard.buttons.url')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setMusicType('file')}
-                  className={`flex-1 py-2 px-4 rounded-lg border-2 transition ${
-                    musicType === 'file'
-                      ? 'border-pink-500 bg-pink-50 text-pink-700'
-                      : 'border-gray-300 hover:border-gray-400'
-                  }`}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition text-sm ${musicType === 'file'
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
                 >
-                  <MusicIcon size={16} className="inline mr-1" />
-                  Upload
+                  {t('addCard.buttons.upload')}
                 </button>
               </div>
 
@@ -224,38 +242,24 @@ export default function AddCardForm() {
                   type="url"
                   value={musicUrl}
                   onChange={(e) => setMusicUrl(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Spotify, YouTube, or SoundCloud URL"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 transition font-sans"
+                  placeholder={t('addCard.placeholders.musicUrl')}
                 />
               )}
 
               {musicType === 'file' && (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-pink-500 transition">
-                  {musicFile ? (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700">{musicFile.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => setMusicFile(null)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X size={20} />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="cursor-pointer">
-                      <MusicIcon size={32} className="mx-auto text-gray-400 mb-2" />
-                      <span className="text-pink-600 hover:text-pink-700 font-medium">
-                        Choose MP3 file
-                      </span>
-                      <input
-                        type="file"
-                        accept="audio/mpeg,audio/mp3"
-                        onChange={handleMusicFileChange}
-                        className="hidden"
-                      />
-                    </label>
-                  )}
+                <div className="border border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
+                  <input
+                    type="file"
+                    id="music-file"
+                    accept="audio/*"
+                    onChange={handleMusicFileChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="music-file" className="cursor-pointer text-purple-600 hover:text-purple-700 font-medium flex flex-col items-center">
+                    <MusicIcon size={24} className="mb-2 opacity-50" />
+                    {musicFile ? musicFile.name : t('addCard.buttons.chooseFile')}
+                  </label>
                 </div>
               )}
             </div>
@@ -264,9 +268,16 @@ export default function AddCardForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
+              className="w-full py-4 bg-ink text-white rounded-xl hover:bg-gray-800 transition font-sans font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-8 tracking-wide transform active:scale-[0.99]"
             >
-              {loading ? 'Creating Card...' : 'Create Card'}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                  {t('addCard.buttons.submitting')}
+                </span>
+              ) : (
+                t('addCard.buttons.submit')
+              )}
             </button>
           </form>
         </div>
