@@ -1,145 +1,74 @@
 # Basil - Implementation Summary
 
 ## Overview
-Successfully transformed the simple HTML card viewer into a complete React + Vite + Supabase application as specified in `instructions.md` and the provided PDF files.
+Successfully migrated the React + Vite application from Supabase to Neon database with Netlify services for authentication and storage.
 
-## What Was Created
+## What Was Changed
 
-### Core Configuration (5 files)
-- `package.json` - Project dependencies and scripts
-- `vite.config.js` - Vite build configuration
-- `tailwind.config.js` - Tailwind CSS configuration
-- `postcss.config.js` - PostCSS with Tailwind and Autoprefixer
-- `.gitignore` - Git ignore patterns
+### Core Dependencies
+- **Removed**: `@supabase/supabase-js`
+- **Added**: 
+  - `@neondatabase/serverless` - Neon database client
+  - `@netlify/blobs` - Netlify Blob storage
+  - `netlify-identity-widget` - Netlify Identity authentication
+  - `parse-multipart-data` - For file upload handling
 
-### Entry Points (3 files)
-- `index.html` - Main HTML entry point with React root div
-- `src/main.jsx` - React application entry point
-- `src/index.css` - Global styles with Tailwind directives
+### Infrastructure Changes
 
-### Backend Integration (1 file)
-- `src/lib/supabase.js` - Supabase client and helper functions
-  - Image upload to card-images bucket
-  - Audio upload to card-music bucket
-  - File deletion utilities
+#### Backend Services
+- **Database**: Migrated from Supabase PostgreSQL to Neon (serverless PostgreSQL)
+  - Direct SQL queries using `@neondatabase/serverless`
+  - Removed Row Level Security (RLS) - now handled in application logic
+  - Changed `user_id` from UUID to TEXT (for Netlify Identity compatibility)
 
-### Custom Hooks (2 files)
-- `src/hooks/useAuth.js` - Authentication management
-  - Sign up, sign in, sign out functions
-  - Auth state tracking and persistence
-- `src/hooks/useCards.js` - Card data management
-  - CRUD operations for cards
-  - Real-time subscriptions for live updates
-  - Card ID generation
+- **Authentication**: Migrated from Supabase Auth to Netlify Identity
+  - Widget-based authentication (modal UI)
+  - Simplified Login/SignUp components
+  - Integrated with Netlify's built-in identity service
 
-### Main Application (1 file)
-- `src/App.jsx` - Main application component
-  - React Router setup
-  - Protected route wrapper
-  - Home page with grid and detail view
+- **Storage**: Migrated from Supabase Storage to Netlify Blobs
+  - Serverless file storage
+  - Netlify Functions for upload/delete operations
+  - Custom function for serving blob files
 
-### Components (9 files)
+#### Removed Features
+- **Real-time subscriptions**: Neon doesn't support real-time updates like Supabase
+  - Users need to manually refresh to see new cards
+  - Could be enhanced with polling if needed
 
-#### Authentication (2 components)
-- `src/components/Auth/Login.jsx` - Login form with email/password
-- `src/components/Auth/SignUp.jsx` - Registration form with validation
+### File Changes
 
-#### Cards Display (3 components)
-- `src/components/Cards/CardGrid.jsx` - Responsive grid layout
-- `src/components/Cards/CardItem.jsx` - Individual card preview with delete
-- `src/components/Cards/CardDetail.jsx` - Full card modal view
+#### New Files Created
+1. `src/lib/neon.js` - Neon database client and query helper
+2. `src/lib/auth.js` - Netlify Identity authentication helpers
+3. `src/lib/storage.js` - Netlify Blobs storage helpers
+4. `netlify/functions/upload-file.js` - File upload handler
+5. `netlify/functions/delete-file.js` - File deletion handler
+6. `netlify/functions/serve-blob.js` - Blob file serving handler
+7. `netlify.toml` - Netlify build configuration
 
-#### Forms (1 component)
-- `src/components/Forms/AddCardForm.jsx` - Create new cards
-  - Image upload with preview
-  - Title and description fields
-  - Optional category
-  - Music options (none/URL/file upload)
+#### Files Updated
+1. `package.json` - Updated dependencies
+2. `.env.example` - New environment variables for Neon
+3. `src/hooks/useAuth.js` - Adapted for Netlify Identity
+4. `src/hooks/useCards.js` - Adapted for Neon database (direct SQL)
+5. `src/components/Auth/Login.jsx` - Simplified for widget-based auth
+6. `src/components/Auth/SignUp.jsx` - Simplified for widget-based auth
+7. `src/components/Forms/AddCardForm.jsx` - Updated storage imports
+8. `index.html` - Added Netlify Identity widget script
+9. `README.md` - Complete rewrite with Neon/Netlify setup instructions
 
-#### Layout (1 component)
-- `src/components/Layout/Navbar.jsx` - Navigation header
-  - Logo and branding
-  - Conditional rendering for auth state
-  - Add card, login, signup buttons
+#### Files Deleted
+1. `src/lib/supabase.js` - No longer needed
 
-#### Media (1 component)
-- `src/components/Music/AudioPlayer.jsx` - Music playback
-  - Spotify embed support
-  - YouTube embed support
-  - MP3 file playback
-  - Secure URL validation (fixed vulnerability)
+### Database Schema Changes
 
-### Documentation (2 files)
-- `README.md` - Comprehensive setup guide
-  - Feature list
-  - Supabase configuration instructions
-  - SQL schema and RLS policies
-  - Storage bucket setup
-  - Deployment guide
-- `.env.example` - Environment variable template
-
-## Key Features Implemented
-
-✅ **Authentication System**
-- Email/password signup and login
-- Secure session management with Supabase Auth
-- Protected routes for authenticated users
-
-✅ **Card Management**
-- Create cards with images and optional music
-- View all cards in responsive grid
-- Delete own cards (with confirmation)
-- Real-time updates across clients
-
-✅ **File Uploads**
-- Image upload to Supabase Storage
-- MP3 audio file upload
-- Automatic URL generation for uploaded files
-
-✅ **Music Integration**
-- Spotify track embeds
-- YouTube video embeds
-- Direct MP3 playback
-- External link support for SoundCloud
-
-✅ **QR Code Support**
-- URL parameter routing (/?id=XXX)
-- Unique card IDs (6-character uppercase)
-- Direct card access via QR codes
-
-✅ **UI/UX**
-- Kawaii aesthetic with pink/purple theme
-- Mobile-first responsive design
-- Loading states and error handling
-- Smooth animations and transitions
-- Line clamping for text overflow
-
-✅ **Security**
-- Row Level Security (RLS) policies
-- Secure URL validation (fixed CVE)
-- Authentication required for mutations
-- Public read access for cards
-
-## Technologies Used
-
-- **React 18.2** - UI framework
-- **Vite 5.0** - Build tool and dev server
-- **Tailwind CSS 3.3** - Utility-first CSS
-- **Supabase 2.39** - Backend as a Service
-  - PostgreSQL database
-  - Authentication
-  - Storage
-  - Real-time subscriptions
-- **React Router 6.20** - Client-side routing
-- **Lucide React** - Icon library
-- **QRCode 1.5** - QR code generation support
-
-## Database Schema
+Updated schema for Neon (no RLS policies):
 
 ```sql
 CREATE TABLE cards (
-  id UUID PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id),
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id TEXT NOT NULL,  -- Changed from UUID to TEXT
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   image_url TEXT NOT NULL,
@@ -147,38 +76,107 @@ CREATE TABLE cards (
   music_file_url TEXT,
   category TEXT,
   card_id TEXT UNIQUE NOT NULL,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE INDEX cards_card_id_idx ON cards(card_id);
+CREATE INDEX cards_user_id_idx ON cards(user_id);
+CREATE INDEX cards_category_idx ON cards(category);
 ```
 
-## Storage Buckets
+### Environment Variables
 
-- `card-images` - Public bucket for card images
-- `card-music` - Public bucket for MP3 files
+**Old (Supabase)**:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+**New (Neon + Netlify)**:
+- `VITE_NEON_DATABASE_URL` - Neon PostgreSQL connection string
+- `VITE_NETLIFY_SITE_URL` - Your Netlify site URL
+
+## Key Features
+
+✅ **Database Operations**
+- Full CRUD operations using direct SQL queries
+- Neon serverless PostgreSQL
+- Efficient query execution
+
+✅ **Authentication System**
+- Netlify Identity widget-based authentication
+- Signup and login via modal UI
+- Secure session management
+
+✅ **File Management**
+- Image and audio upload to Netlify Blobs
+- Serverless file storage
+- Public URL generation for uploaded files
+
+✅ **UI/UX**
+- Maintained kawaii aesthetic with pink/purple theme
+- Mobile-first responsive design
+- Simplified auth flow with modal widget
+
+⚠️ **Known Limitations**
+- No real-time updates (removed due to Neon limitations)
+- Row Level Security replaced with application-level checks
+- Local development requires `netlify dev` for full functionality
+
+## Technologies Used
+
+- **React 18.2** - UI framework
+- **Vite 5.0** - Build tool and dev server
+- **Tailwind CSS 3.3** - Utility-first CSS
+- **Neon** - Serverless PostgreSQL database
+- **Netlify Identity** - Authentication
+- **Netlify Blobs** - File storage
+- **Netlify Functions** - Serverless functions for file operations
+- **React Router 6.20** - Client-side routing
+- **Lucide React** - Icon library
+- **QRCode 1.5** - QR code generation support
+
+## Deployment
+
+### Prerequisites
+1. Neon account with a database created
+2. Netlify account (free tier works)
+3. GitHub repository (optional, but recommended)
+
+### Setup Steps
+1. Create Neon database and copy connection string
+2. Deploy to Netlify (via GitHub integration or CLI)
+3. Enable Netlify Identity in site settings
+4. Add environment variables in Netlify
+5. Users can now sign up and use the app
 
 ## Build Verification
 
 ✅ Project builds successfully with `npm run build`
 ✅ No TypeScript errors
-✅ No linting errors
-✅ All security vulnerabilities fixed
-✅ Production bundle: ~382 KB (minified)
+✅ Production bundle: ~565 KB (minified)
+✅ All Netlify Functions created and configured
+
+## Benefits of Neon + Netlify
+
+1. **Cost-effective**: Both have generous free tiers
+2. **Netlify Native**: Optimized for Netlify deployment
+3. **Serverless**: Auto-scaling database and functions
+4. **Simple Setup**: Fewer moving parts than Supabase
+5. **Fast**: Neon provides low-latency database access
+
+## Migration Notes
+
+- The migration from Supabase to Neon is complete
+- All core functionality is preserved (except real-time)
+- Authentication is simpler with widget-based UI
+- File storage works similarly but uses Netlify infrastructure
+- Local development requires `netlify dev` instead of `npm run dev`
 
 ## Next Steps for Users
 
-1. Create a Supabase project
-2. Run SQL schema in Supabase SQL Editor
-3. Create storage buckets with RLS policies
-4. Copy `.env.example` to `.env` and add credentials
-5. Run `npm install`
-6. Run `npm run dev` for development
-7. Run `npm run build` for production
-
-## Security Notes
-
-- Fixed URL validation vulnerability in AudioPlayer (CVE: js/incomplete-url-substring-sanitization)
-- Implemented proper hostname checking using URL API
-- All user inputs are validated and sanitized
-- Row Level Security enforced on database
-- Authentication required for write operations
+1. Create a Neon database and get connection string
+2. Deploy to Netlify (GitHub integration recommended)
+3. Enable Netlify Identity in site settings
+4. Add environment variables (database URL, site URL)
+5. Test the application end-to-end
+6. Invite users or open registration
