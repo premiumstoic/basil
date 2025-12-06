@@ -30,11 +30,11 @@ export const useCards = () => {
       'SELECT * FROM cards WHERE card_id = $1 LIMIT 1',
       [cardId]
     );
-    
+
     if (!result || result.length === 0) {
       throw new Error('Card not found');
     }
-    
+
     return result[0];
   };
 
@@ -43,13 +43,13 @@ export const useCards = () => {
     if (!cardData.user_id) {
       throw new Error('User ID is required to create a card. Please log in again.');
     }
-    
+
     const result = await query(
       `INSERT INTO cards (user_id, title, description, category, image_url, music_url, music_file_url, card_id, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
        RETURNING *`,
       [
-        cardData.user_id,
+        String(cardData.user_id), // Convert to string to match cards table schema
         cardData.title,
         cardData.description,
         cardData.category,
