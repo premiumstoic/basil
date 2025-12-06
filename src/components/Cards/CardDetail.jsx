@@ -128,97 +128,106 @@ export default function CardDetail() {
 
   return (
     <div
-      className="fixed inset-0 bg-ink/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
-      onClick={() => navigate('/')}
+      className="fixed inset-0 z-50 overflow-y-auto"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
     >
       <div
-        className="bg-white rounded-xl max-w-2xl w-full my-8 shadow-2xl border border-gray-100 overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="relative">
-          <img
-            src={card.image_url}
-            alt={card.title}
-            className="w-full h-64 sm:h-96 object-cover"
-          />
-          <Link
-            to="/"
-            className="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur rounded-full shadow-lg hover:bg-white transition text-ink"
-          >
-            <ArrowLeft size={24} />
-          </Link>
+        className="fixed inset-0 bg-ink/30 backdrop-blur-sm transition-opacity"
+        onClick={() => navigate('/')}
+      />
 
-          {isOwner && (
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="absolute top-4 right-4 p-2 bg-red-50/90 backdrop-blur rounded-full shadow-lg hover:bg-red-100 transition text-red-600 disabled:opacity-50"
-              title="Delete card"
+      <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+        <div
+          className="relative transform overflow-hidden rounded-xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-2xl border border-gray-100"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative">
+            <img
+              src={card.image_url}
+              alt={card.title}
+              className="w-full h-64 sm:h-96 object-cover"
+            />
+            <Link
+              to="/"
+              className="absolute top-4 left-4 p-2 bg-white/90 backdrop-blur rounded-full shadow-lg hover:bg-white transition text-ink"
             >
-              <Trash2 size={24} />
-            </button>
-          )}
-        </div>
+              <ArrowLeft size={24} />
+            </Link>
 
-        <div className="p-8 sm:p-10">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-4">
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink tracking-tight leading-tight">{card.title}</h1>
-            {card.category && (
-              <span className="self-start px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-sans font-medium border border-purple-100 whitespace-nowrap">
-                {card.category}
-              </span>
+            {isOwner && (
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="absolute top-4 right-4 p-2 bg-red-50/90 backdrop-blur rounded-full shadow-lg hover:bg-red-100 transition text-red-600 disabled:opacity-50"
+                title="Delete card"
+              >
+                <Trash2 size={24} />
+              </button>
             )}
           </div>
 
-          <p className="text-gray-800 text-lg leading-relaxed mb-8 whitespace-pre-wrap font-serif">
-            {card.description}
-          </p>
-
-          {(card.music_url || card.music_file_url) && (
-            <div className="mb-8">
-              <AudioPlayer
-                musicUrl={card.music_url}
-                musicFileUrl={card.music_file_url}
-                title={card.title}
-              />
+          <div className="p-8 sm:p-10">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-4">
+              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink tracking-tight leading-tight">{card.title}</h1>
+              {card.category && (
+                <span className="self-start px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-sans font-medium border border-purple-100 whitespace-nowrap">
+                  {card.category}
+                </span>
+              )}
             </div>
-          )}
 
-          <div className="pt-6 border-t border-gray-100 flex flex-col gap-6">
+            <p className="text-gray-800 text-lg leading-relaxed mb-8 whitespace-pre-wrap font-serif">
+              {card.description}
+            </p>
 
-            {/* QR Code Section */}
-            {qrCodeUrl && (
-              <div className="flex flex-col items-center bg-gray-50 rounded-xl p-6 border border-gray-100">
-                <div className="flex items-center gap-2 mb-4 text-ink font-serif font-bold">
-                  <QrCode size={20} className="text-purple-600" />
-                  <h3>{t('detail.share')}</h3>
-                </div>
-
-                <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-100 mb-4">
-                  <img
-                    src={qrCodeUrl}
-                    alt="Card QR Code"
-                    className="w-32 h-32 sm:w-40 sm:h-40"
-                  />
-                </div>
-
-                <p className="text-sm text-gray-500 font-sans mb-4 text-center max-w-xs">
-                  {t('detail.scanToView')}
-                </p>
-
-                <button
-                  onClick={downloadQRCode}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-ink rounded-lg transition text-sm font-medium shadow-sm hover:shadow"
-                >
-                  <Download size={16} />
-                  {t('detail.downloadQr')}
-                </button>
+            {(card.music_url || card.music_file_url) && (
+              <div className="mb-8">
+                <AudioPlayer
+                  musicUrl={card.music_url}
+                  musicFileUrl={card.music_file_url}
+                  title={card.title}
+                />
               </div>
             )}
 
-            <div className="text-xs text-gray-400 font-mono flex justify-between items-center">
-              <span>ID: {card.card_id}</span>
-              <span>Reyhan's Collection</span>
+            <div className="pt-6 border-t border-gray-100 flex flex-col gap-6">
+
+              {/* QR Code Section */}
+              {qrCodeUrl && (
+                <div className="flex flex-col items-center bg-gray-50 rounded-xl p-6 border border-gray-100">
+                  <div className="flex items-center gap-2 mb-4 text-ink font-serif font-bold">
+                    <QrCode size={20} className="text-purple-600" />
+                    <h3>{t('detail.share')}</h3>
+                  </div>
+
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-100 mb-4">
+                    <img
+                      src={qrCodeUrl}
+                      alt="Card QR Code"
+                      className="w-32 h-32 sm:w-40 sm:h-40"
+                    />
+                  </div>
+
+                  <p className="text-sm text-gray-500 font-sans mb-4 text-center max-w-xs">
+                    {t('detail.scanToView')}
+                  </p>
+
+                  <button
+                    onClick={downloadQRCode}
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-ink rounded-lg transition text-sm font-medium shadow-sm hover:shadow"
+                  >
+                    <Download size={16} />
+                    {t('detail.downloadQr')}
+                  </button>
+                </div>
+              )}
+
+              <div className="text-xs text-gray-400 font-mono flex justify-between items-center">
+                <span>ID: {card.card_id}</span>
+                <span>Reyhan's Collection</span>
+              </div>
             </div>
           </div>
         </div>
