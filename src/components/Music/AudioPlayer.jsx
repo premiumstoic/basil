@@ -1,6 +1,16 @@
 // src/components/Music/AudioPlayer.jsx
 import { Music } from 'lucide-react';
 
+// Helper function to safely check if URL is from a specific domain
+const isFromDomain = (url, domain) => {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`);
+  } catch {
+    return false;
+  }
+};
+
 export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
   const audioSource = musicFileUrl || musicUrl;
 
@@ -8,14 +18,15 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
 
   // Check if it's a streaming URL (Spotify, YouTube, SoundCloud)
   const isStreamingUrl = musicUrl && (
-    musicUrl.includes('spotify.com') ||
-    musicUrl.includes('youtube.com') ||
-    musicUrl.includes('soundcloud.com')
+    isFromDomain(musicUrl, 'spotify.com') ||
+    isFromDomain(musicUrl, 'youtube.com') ||
+    isFromDomain(musicUrl, 'youtu.be') ||
+    isFromDomain(musicUrl, 'soundcloud.com')
   );
 
   if (isStreamingUrl) {
     // Handle Spotify embeds
-    if (musicUrl.includes('spotify.com')) {
+    if (isFromDomain(musicUrl, 'spotify.com')) {
       const trackId = musicUrl.split('/').pop().split('?')[0];
       return (
         <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-4">
@@ -36,7 +47,7 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
     }
 
     // Handle YouTube embeds
-    if (musicUrl.includes('youtube.com') || musicUrl.includes('youtu.be')) {
+    if (isFromDomain(musicUrl, 'youtube.com') || isFromDomain(musicUrl, 'youtu.be')) {
       let videoId;
       if (musicUrl.includes('youtu.be')) {
         videoId = musicUrl.split('/').pop().split('?')[0];
