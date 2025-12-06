@@ -7,7 +7,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Create Supabase client with environment variable validation
 const createSupabaseClient = () => {
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('⚠️ Supabase environment variables not configured. Using mock client.');
+    console.warn('⚠️ Supabase environment variables not configured. Client disabled.');
     console.warn('Please copy .env.example to .env and add your Supabase credentials.');
     return null;
   }
