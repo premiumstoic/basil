@@ -40,7 +40,9 @@ export default function CardDetail() {
     fetchCard();
   }, [cardId]);
 
-  const handleDelete = async () => {
+  const handleDelete = async (e) => {
+    e.stopPropagation(); // Prevent modal from closing
+
     if (!confirm('Are you sure you want to delete this card?')) {
       return;
     }
