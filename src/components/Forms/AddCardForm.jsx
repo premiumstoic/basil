@@ -7,6 +7,8 @@ import { useCards } from '../../hooks/useCards';
 import { uploadImage, uploadAudio } from '../../lib/storage';
 import { useLanguage } from '../../contexts/LanguageContext';
 
+const CATEGORIES = ['Film', 'Edebiyat', 'Sanat', 'Müzik', 'Felsefe', 'Tarih'];
+
 export default function AddCardForm() {
   const { user } = useAuth();
   const { addCard, generateCardId } = useCards();
