@@ -9,6 +9,14 @@ export default async (req, context) => {
 
   try {
     const contentType = req.headers.get('content-type');
+    
+    if (!contentType || !contentType.includes('boundary=')) {
+      return new Response(JSON.stringify({ message: 'Invalid content-type header' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
     const boundary = contentType.split('boundary=')[1];
     const bodyBuffer = await req.arrayBuffer();
     const parts = multipart.parse(Buffer.from(bodyBuffer), boundary);
@@ -37,7 +45,16 @@ export default async (req, context) => {
     });
 
     // Generate public URL
-    const siteUrl = process.env.URL || process.env.VITE_NETLIFY_SITE_URL || 'http://localhost:8888';
+    const siteUrl = process.env.URL || process.env.VITE_NETLIFY_SITE_URL;
+    
+    if (!siteUrl) {
+      console.error('Site URL not configured. Set URL or VITE_NETLIFY_SITE_URL environment variable.');
+      return new Response(JSON.stringify({ message: 'Server configuration error' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
     const publicUrl = `${siteUrl}/.netlify/blobs/${bucket}/${fileName}`;
 
     return new Response(JSON.stringify({ url: publicUrl }), {

@@ -44,7 +44,7 @@ export const useCards = () => {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
        RETURNING *`,
       [
-        cardData.user_id,
+        cardData.user_id || null,  // Handle cases where user_id might not be set
         cardData.title,
         cardData.description,
         cardData.category,

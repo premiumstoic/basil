@@ -12,30 +12,46 @@ export const getCurrentUser = () => {
 };
 
 // Sign up with email and password
-export const signUp = async (email, password) => {
+export const signUp = async () => {
   return new Promise((resolve, reject) => {
-    netlifyIdentity.open('signup');
-    netlifyIdentity.on('signup', (user) => {
+    const handleSignup = (user) => {
+      netlifyIdentity.off('signup', handleSignup);
+      netlifyIdentity.off('error', handleError);
       netlifyIdentity.close();
       resolve(user);
-    });
-    netlifyIdentity.on('error', (err) => {
+    };
+    
+    const handleError = (err) => {
+      netlifyIdentity.off('signup', handleSignup);
+      netlifyIdentity.off('error', handleError);
       reject(err);
-    });
+    };
+    
+    netlifyIdentity.on('signup', handleSignup);
+    netlifyIdentity.on('error', handleError);
+    netlifyIdentity.open('signup');
   });
 };
 
 // Sign in with email and password
-export const signIn = async (email, password) => {
+export const signIn = async () => {
   return new Promise((resolve, reject) => {
-    netlifyIdentity.open('login');
-    netlifyIdentity.on('login', (user) => {
+    const handleLogin = (user) => {
+      netlifyIdentity.off('login', handleLogin);
+      netlifyIdentity.off('error', handleError);
       netlifyIdentity.close();
       resolve(user);
-    });
-    netlifyIdentity.on('error', (err) => {
+    };
+    
+    const handleError = (err) => {
+      netlifyIdentity.off('login', handleLogin);
+      netlifyIdentity.off('error', handleError);
       reject(err);
-    });
+    };
+    
+    netlifyIdentity.on('login', handleLogin);
+    netlifyIdentity.on('error', handleError);
+    netlifyIdentity.open('login');
   });
 };
 
