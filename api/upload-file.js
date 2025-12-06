@@ -1,5 +1,7 @@
 // api/upload-file.js
 import { put } from '@vercel/blob';
+import formidable from 'formidable';
+import fs from 'fs';
 
 export const config = {
     api: {
@@ -13,61 +15,29 @@ export default async function handler(req, res) {
     }
 
     try {
-        const contentType = req.headers['content-type'];
+        // Parse the multipart form data using formidable
+        const form = formidable({});
 
-        if (!contentType || !contentType.includes('multipart/form-data')) {
-            return res.status(400).json({ message: 'Invalid content type' });
-        }
+        const [fields, files] = await form.parse(req);
 
-        // Get the raw body
-        const chunks = [];
-        for await (const chunk of req) {
-            chunks.push(chunk);
-        }
-        const buffer = Buffer.concat(chunks);
-
-        // Parse multipart data manually (simplified - in production use a library)
-        const boundary = contentType.split('boundary=')[1];
-        const parts = buffer.toString('binary').split(`--${boundary}`);
-
-        let fileData = null;
-        let fileName = null;
-        let fileType = null;
-
-        for (const part of parts) {
-            if (part.includes('name="file"')) {
-                const headers = part.split('\r\n\r\n')[0];
-                const fileContent = part.split('\r\n\r\n')[1];
-
-                // Extract filename
-                const filenameMatch = headers.match(/filename="([^"]+)"/);
-                if (filenameMatch) {
-                    const originalName = filenameMatch[1];
-                    const ext = originalName.split('.').pop();
-                    fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
-                }
-
-                // Extract content type
-                const contentTypeMatch = headers.match(/Content-Type: ([^\r\n]+)/);
-                if (contentTypeMatch) {
-                    fileType = contentTypeMatch[1].trim();
-                }
-
-                // Convert binary string back to buffer
-                if (fileContent) {
-                    fileData = Buffer.from(fileContent.split('\r\n')[0], 'binary');
-                }
-            }
-        }
-
-        if (!fileData || !fileName) {
+        const fileArray = files.file;
+        if (!fileArray || fileArray.length === 0) {
             return res.status(400).json({ message: 'No file provided' });
         }
 
+        const file = fileArray[0];
+
+        // Read file content
+        const fileContent = fs.readFileSync(file.filepath);
+
+        // Generate filename
+        const ext = file.originalFilename?.split('.').pop() || 'png';
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+
         // Upload to Vercel Blob
-        const blob = await put(fileName, fileData, {
+        const blob = await put(fileName, fileContent, {
             access: 'public',
-            contentType: fileType,
+            contentType: file.mimetype || 'image/png',
         });
 
         return res.status(200).json({ url: blob.url });
