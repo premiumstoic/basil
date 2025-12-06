@@ -7,8 +7,5 @@
             "source": "/(.*)",
             "destination": "/index.html"
         }
-    ],
-    "env": {
-        "VITE_NEON_DATABASE_URL": "@neon_database_url"
-    }
+    ]
 }
