@@ -48,7 +48,9 @@ export const useCards = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (supabase) {
+        supabase.removeChannel(channel);
+      }
     };
   }, []);
 
