@@ -50,27 +50,24 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
       );
     }
 
-    // Handle Apple Music embeds
+    // Handle Apple Music (cannot embed due to CSP, show link instead)
     if (isFromDomain(musicUrl, 'music.apple.com')) {
-      // Extract the embed URL from Apple Music link
-      // Format: https://music.apple.com/us/album/song-name/1234567890?i=1234567890
-      const embedUrl = musicUrl.replace('/album/', '/embed/album/').replace('/playlist/', '/embed/playlist/');
-
       return (
         <div className="bg-gradient-to-br from-green-50 to-purple-50 rounded-xl p-4">
-          <div className="flex items-center mb-3">
-            <Music size={20} className="text-purple-500 mr-2" />
-            <span className="font-medium text-gray-700">Apple Music</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Music size={20} className="text-purple-500 mr-2" />
+              <span className="font-medium text-gray-700">Apple Music</span>
+            </div>
+            <a
+              href={musicUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg hover:from-pink-600 hover:to-rose-600 transition font-sans font-medium"
+            >
+              Listen on Apple Music →
+            </a>
           </div>
-          <iframe
-            src={embedUrl}
-            width="100%"
-            height="175"
-            frameBorder="0"
-            allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-            className="rounded-lg"
-          ></iframe>
         </div>
       );
     }
