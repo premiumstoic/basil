@@ -210,7 +210,7 @@ export default function AddCardForm() {
             {/* Music Section */}
             <div className="pt-6 border-t border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-4 tracking-wide uppercase flex items-center">
-                <Music size={18} className="mr-2 text-purple-600" />
+                <MusicIcon size={18} className="mr-2 text-purple-600" />
                 {t('addCard.labels.music')}
               </label>
 
