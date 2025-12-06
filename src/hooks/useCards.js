@@ -8,6 +8,12 @@ export const useCards = () => {
   const [error, setError] = useState(null);
 
   const fetchCards = async () => {
+    if (!supabase) {
+      setLoading(false);
+      setError('Supabase is not configured. Please set up environment variables.');
+      return;
+    }
+
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -27,6 +33,8 @@ export const useCards = () => {
   useEffect(() => {
     fetchCards();
 
+    if (!supabase) return;
+
     // Subscribe to real-time changes
     const channel = supabase
       .channel('cards-changes')
@@ -40,11 +48,16 @@ export const useCards = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (supabase) {
+        supabase.removeChannel(channel);
+      }
     };
   }, []);
 
   const getCardById = async (cardId) => {
+    if (!supabase) {
+      throw new Error('Supabase is not configured. Please set up environment variables.');
+    }
     const { data, error } = await supabase
       .from('cards')
       .select('*')
@@ -56,6 +69,9 @@ export const useCards = () => {
   };
 
   const addCard = async (cardData) => {
+    if (!supabase) {
+      throw new Error('Supabase is not configured. Please set up environment variables.');
+    }
     const { data, error } = await supabase
       .from('cards')
       .insert([cardData])
@@ -67,6 +83,9 @@ export const useCards = () => {
   };
 
   const deleteCard = async (id) => {
+    if (!supabase) {
+      throw new Error('Supabase is not configured. Please set up environment variables.');
+    }
     const { error } = await supabase
       .from('cards')
       .delete()
