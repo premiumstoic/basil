@@ -1,37 +1,39 @@
 // netlify/functions/delete-file.js
-import { getStore } from '@netlify/blobs';
+const { getStore } = require('@netlify/blobs');
 
-export default async (req, context) => {
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ message: 'Method not allowed' })
+    };
   }
 
   try {
-    const { bucket, fileName } = await req.json();
+    const { bucket, fileName } = JSON.parse(event.body);
 
     if (!bucket || !fileName) {
-      return new Response(JSON.stringify({ message: 'Missing bucket or fileName' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Missing bucket or fileName' })
+      };
     }
 
     const store = getStore(bucket);
     await store.delete(fileName);
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ success: true })
+    };
   } catch (error) {
     console.error('Delete error:', error);
-    return new Response(JSON.stringify({ message: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: error.message })
+    };
   }
-};
-
-export const config = {
-  path: '/delete-file'
 };
