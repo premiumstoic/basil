@@ -1,44 +1,98 @@
 // src/hooks/useAuth.js
 import { useState, useEffect } from 'react';
-import { initAuth, getCurrentUser, signIn as authSignIn, signUp as authSignUp, signOut as authSignOut, onAuthStateChange } from '../lib/auth';
+
+const TOKEN_KEY = 'auth_token';
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize Netlify Identity
-    initAuth();
-
-    // Get initial user
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-    setLoading(false);
-
-    // Listen for auth changes
-    const unsubscribe = onAuthStateChange((user) => {
-      setUser(getCurrentUser());
-    });
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
+    // Check for existing token and fetch user
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      fetchUser(token);
+    } else {
+      setLoading(false);
+    }
   }, []);
 
-  // Opens Netlify Identity signup modal
-  const signUp = async () => {
-    const user = await authSignUp();
-    return user;
+  const fetchUser = async (token) => {
+    try {
+      const response = await fetch('/api/auth/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      } else {
+        // Token invalid/expired
+        localStorage.removeItem(TOKEN_KEY);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      localStorage.removeItem(TOKEN_KEY);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Opens Netlify Identity login modal
-  const signIn = async () => {
-    const user = await authSignIn();
-    return user;
+  const signUp = async (email, password) => {
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Signup failed');
+      }
+
+      localStorage.setItem(TOKEN_KEY, data.token);
+      setUser(data.user);
+      return data.user;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const signIn = async (email, password) => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      localStorage.setItem(TOKEN_KEY, data.token);
+      setUser(data.user);
+      return data.user;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const signOut = async () => {
-    await authSignOut();
+    localStorage.removeItem(TOKEN_KEY);
+    setUser(null);
   };
 
   return {
