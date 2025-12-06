@@ -39,7 +39,7 @@ export default function SignUp() {
 
     try {
       await signUp(email, password);
-      navigate('/');
+      window.location.href = '/';
     } catch (err) {
       setError(err.message);
     } finally {

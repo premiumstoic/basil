@@ -27,7 +27,7 @@ export default function Login() {
 
     try {
       await signIn(email, password);
-      navigate('/');
+      window.location.href = '/';
     } catch (err) {
       setError(err.message);
     } finally {
