@@ -8,6 +8,7 @@ import { uploadImage, uploadAudio } from '../../lib/storage';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 
+import imageCompression from 'browser-image-compression';
 
 export default function AddCardForm() {
   const { user } = useAuth();
@@ -25,18 +26,50 @@ export default function AddCardForm() {
   const [musicFile, setMusicFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [compressing, setCompressing] = useState(false);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
+      // Automagically compress if needed
+      try {
+        setCompressing(true);
+        const options = {
+          maxSizeMB: 1, // Target smaller than Vercel limit (1MB is safe)
+          maxWidthOrHeight: 1920, // Reasonable max dimension
+          useWebWorker: true,
+        };
+
+        let fileToUse = file;
+        if (file.size > 1024 * 1024) { // Only compress if > 1MB
+          console.log('Compressing image...', file.size);
+          fileToUse = await imageCompression(file, options);
+          console.log('Compressed image size:', fileToUse.size);
+        }
+
+        setError('');
+        setImage(fileToUse);
+        setImagePreview(URL.createObjectURL(fileToUse));
+      } catch (err) {
+        console.error('Compression error:', err);
+        setError('Failed to process image. Please try another.');
+      } finally {
+        setCompressing(false);
+      }
     }
   };
 
   const handleMusicFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 4.5 * 1024 * 1024) {
+        setError('Audio size must be less than 4.5MB');
+        setMusicFile(null);
+        e.target.value = null;
+        return;
+      }
+
+      setError('');
       setMusicFile(file);
     }
   };
@@ -148,7 +181,7 @@ export default function AddCardForm() {
                           required
                         />
                       </label>
-                      <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 font-sans">PNG, JPG, GIF up to 5MB</p>
+                      <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 font-sans">PNG, JPG, GIF up to 4.5MB</p>
                     </div>
                   </div>
                 )}
@@ -277,13 +310,13 @@ export default function AddCardForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || compressing}
               className="w-full py-4 bg-ink dark:bg-purple-600 text-white rounded-xl hover:bg-gray-800 dark:hover:bg-purple-700 transition font-sans font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-8 tracking-wide transform active:scale-[0.99]"
             >
-              {loading ? (
+              {loading || compressing ? (
                 <span className="flex items-center justify-center">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
-                  {t('addCard.buttons.submitting')}
+                  {compressing ? 'Optimizing Image...' : t('addCard.buttons.submitting')}
                 </span>
               ) : (
                 t('addCard.buttons.submit')

@@ -50,6 +50,7 @@ export const translations = {
             categories: ['Film', 'Literature', 'Art', 'Music', 'Philosophy', 'History', 'Nature', 'Memories'],
             errors: {
                 noImage: 'Please upload an image',
+                imageTooLarge: 'Image size must be less than 4.5MB',
             },
         },
         home: {
@@ -137,7 +138,8 @@ export const translations = {
             },
             categories: ['Film', 'Edebiyat', 'Sanat', 'Müzik', 'Felsefe', 'Tarih', 'Doğa', 'Hatıralar'],
             errors: {
-                noImage: 'Lütfen bir resim yükleyin',
+                noImage: 'Lütfen bir görsel yükleyin',
+                imageTooLarge: 'Görsel boyutu 4.5MB\'dan küçük olmalıdır',
             },
         },
         home: {
