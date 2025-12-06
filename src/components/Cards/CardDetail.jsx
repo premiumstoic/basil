@@ -1,20 +1,24 @@
 // src/components/Cards/CardDetail.jsx
 import { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useCards } from '../../hooks/useCards';
+import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import AudioPlayer from '../Music/AudioPlayer';
 
 export default function CardDetail() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const cardId = searchParams.get('id');
-  const { getCardById } = useCards();
+  const { getCardById, deleteCard } = useCards();
+  const { user } = useAuth();
   const { t } = useLanguage();
 
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!cardId) {
@@ -35,6 +39,24 @@ export default function CardDetail() {
 
     fetchCard();
   }, [cardId]);
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this card?')) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      await deleteCard(card.id);
+      navigate('/');
+    } catch (err) {
+      alert('Failed to delete card: ' + err.message);
+      setDeleting(false);
+    }
+  };
+
+  // Check if current user owns this card
+  const isOwner = user && card && String(user.id) === String(card.user_id);
 
   if (!cardId || (!loading && !card)) {
     return null;
@@ -85,6 +107,17 @@ export default function CardDetail() {
           >
             <ArrowLeft size={24} />
           </Link>
+
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="absolute top-4 right-4 p-2 bg-red-50/90 backdrop-blur rounded-full shadow-lg hover:bg-red-100 transition text-red-600 disabled:opacity-50"
+              title="Delete card"
+            >
+              <Trash2 size={24} />
+            </button>
+          )}
         </div>
 
         <div className="p-8 sm:p-10">
