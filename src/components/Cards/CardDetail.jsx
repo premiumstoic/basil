@@ -50,7 +50,8 @@ export default function CardDetail() {
     try {
       setDeleting(true);
       await deleteCard(card.id);
-      navigate('/');
+      // Force full page refresh to update card list
+      window.location.href = '/';
     } catch (err) {
       alert('Failed to delete card: ' + err.message);
       setDeleting(false);
