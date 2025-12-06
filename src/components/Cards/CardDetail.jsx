@@ -19,6 +19,7 @@ export default function CardDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (!cardId) {
@@ -40,13 +41,12 @@ export default function CardDetail() {
     fetchCard();
   }, [cardId]);
 
-  const handleDelete = async (e) => {
-    e.stopPropagation(); // Prevent modal from closing
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(true);
+  };
 
-    if (!confirm('Are you sure you want to delete this card?')) {
-      return;
-    }
-
+  const confirmDelete = async () => {
     try {
       setDeleting(true);
       await deleteCard(card.id);
@@ -54,6 +54,7 @@ export default function CardDetail() {
     } catch (err) {
       alert('Failed to delete card: ' + err.message);
       setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -158,6 +159,40 @@ export default function CardDetail() {
           </div>
         </div>
       </div>
+
+      {/* Custom Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] p-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            className="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl border border-gray-100"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-serif font-bold text-ink mb-3">Delete Card?</h3>
+            <p className="text-gray-600 font-sans mb-6">
+              Are you sure you want to delete this card? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-sans font-medium disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting}
+                className="flex-1 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-sans font-medium disabled:opacity-50"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
