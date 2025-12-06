@@ -4,10 +4,24 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create a mock client if environment variables are not set
+const createSupabaseClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('⚠️ Supabase environment variables not configured. Using mock client.');
+    console.warn('Please copy .env.example to .env and add your Supabase credentials.');
+    return null;
+  }
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
+
+export const supabase = createSupabaseClient();
 
 // Helper function to upload image
 export const uploadImage = async (file, bucket = 'card-images') => {
+  if (!supabase) {
+    throw new Error('Supabase is not configured. Please set up environment variables.');
+  }
+  
   const fileExt = file.name.split('.').pop();
   const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
   const filePath = `${fileName}`;
@@ -32,6 +46,11 @@ export const uploadAudio = async (file) => {
 
 // Helper function to delete file
 export const deleteFile = async (url, bucket = 'card-images') => {
+  if (!supabase) {
+    console.error('Supabase is not configured. Cannot delete file.');
+    return;
+  }
+  
   const path = url.split('/').pop();
   const { error } = await supabase.storage
     .from(bucket)
