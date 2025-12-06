@@ -68,6 +68,9 @@ export const translations = {
             notFound: 'Card Not Found',
             notFoundDesc: "The card you're looking for doesn't exist or has been removed.",
             backToHome: "Back to Reyhan's Collection",
+            share: 'Share this Card',
+            scanToView: 'Scan to view this card or download the QR code to print it.',
+            downloadQr: 'Download QR Code',
         },
         player: {
             spotify: 'Listen on Spotify',
@@ -141,6 +144,9 @@ export const translations = {
             notFound: 'Kart Bulunamadı',
             notFoundDesc: 'Aradığınız kart mevcut değil veya silinmiş.',
             backToHome: "Reyhan'ın Koleksiyonuna Dön",
+            share: 'Bu Kartı Paylaş',
+            scanToView: 'Bu kartı görüntülemek için taratın veya yazdırmak için QR kodunu indirin.',
+            downloadQr: 'QR Kodunu İndir',
         },
         player: {
             spotify: 'Spotify\'da Dinle',

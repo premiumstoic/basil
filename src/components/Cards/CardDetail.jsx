@@ -1,7 +1,8 @@
 // src/components/Cards/CardDetail.jsx
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, Download, QrCode } from 'lucide-react';
+import QRCode from 'qrcode';
 import { useCards } from '../../hooks/useCards';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -40,6 +41,35 @@ export default function CardDetail() {
 
     fetchCard();
   }, [cardId]);
+
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+
+  useEffect(() => {
+    if (cardId) {
+      // Use the current origin or fallback for SSR/port issues if needed, but window.location.origin is standard
+      const url = `${window.location.origin}/?id=${cardId}`;
+      QRCode.toDataURL(url, {
+        width: 400,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      })
+        .then(url => setQrCodeUrl(url))
+        .catch(err => console.error('Error generating QR code:', err));
+    }
+  }, [cardId]);
+
+  const downloadQRCode = () => {
+    if (!qrCodeUrl) return;
+    const link = document.createElement('a');
+    link.href = qrCodeUrl;
+    link.download = `reyhanli-card-${cardId}-qr.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const handleDelete = (e) => {
     e.stopPropagation();
@@ -154,9 +184,42 @@ export default function CardDetail() {
             </div>
           )}
 
-          <div className="pt-6 border-t border-gray-100 text-xs text-gray-400 font-mono flex justify-between items-center">
-            <span>ID: {card.card_id}</span>
-            <span>Reyhan's Collection</span>
+          <div className="pt-6 border-t border-gray-100 flex flex-col gap-6">
+
+            {/* QR Code Section */}
+            {qrCodeUrl && (
+              <div className="flex flex-col items-center bg-gray-50 rounded-xl p-6 border border-gray-100">
+                <div className="flex items-center gap-2 mb-4 text-ink font-serif font-bold">
+                  <QrCode size={20} className="text-purple-600" />
+                  <h3>{t('detail.share')}</h3>
+                </div>
+
+                <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-100 mb-4">
+                  <img
+                    src={qrCodeUrl}
+                    alt="Card QR Code"
+                    className="w-32 h-32 sm:w-40 sm:h-40"
+                  />
+                </div>
+
+                <p className="text-sm text-gray-500 font-sans mb-4 text-center max-w-xs">
+                  {t('detail.scanToView')}
+                </p>
+
+                <button
+                  onClick={downloadQRCode}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-ink rounded-lg transition text-sm font-medium shadow-sm hover:shadow"
+                >
+                  <Download size={16} />
+                  {t('detail.downloadQr')}
+                </button>
+              </div>
+            )}
+
+            <div className="text-xs text-gray-400 font-mono flex justify-between items-center">
+              <span>ID: {card.card_id}</span>
+              <span>Reyhan's Collection</span>
+            </div>
           </div>
         </div>
       </div>
