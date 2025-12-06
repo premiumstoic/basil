@@ -18,12 +18,13 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
 
   if (!audioSource) return null;
 
-  // Check if it's a streaming URL (Spotify, YouTube, YouTube Music, SoundCloud)
+  // Check if it's a streaming URL (Spotify, YouTube, YouTube Music, Apple Music, SoundCloud)
   const isStreamingUrl = musicUrl && (
     isFromDomain(musicUrl, 'spotify.com') ||
     isFromDomain(musicUrl, 'youtube.com') ||
     isFromDomain(musicUrl, 'youtu.be') ||
     isFromDomain(musicUrl, 'music.youtube.com') ||
+    isFromDomain(musicUrl, 'music.apple.com') ||
     isFromDomain(musicUrl, 'soundcloud.com')
   );
 
@@ -43,6 +44,31 @@ export default function AudioPlayer({ musicUrl, musicFileUrl, title }) {
             height="152"
             frameBorder="0"
             allow="encrypted-media"
+            className="rounded-lg"
+          ></iframe>
+        </div>
+      );
+    }
+
+    // Handle Apple Music embeds
+    if (isFromDomain(musicUrl, 'music.apple.com')) {
+      // Extract the embed URL from Apple Music link
+      // Format: https://music.apple.com/us/album/song-name/1234567890?i=1234567890
+      const embedUrl = musicUrl.replace('/album/', '/embed/album/').replace('/playlist/', '/embed/playlist/');
+
+      return (
+        <div className="bg-gradient-to-br from-green-50 to-purple-50 rounded-xl p-4">
+          <div className="flex items-center mb-3">
+            <Music size={20} className="text-purple-500 mr-2" />
+            <span className="font-medium text-gray-700">Apple Music</span>
+          </div>
+          <iframe
+            src={embedUrl}
+            width="100%"
+            height="175"
+            frameBorder="0"
+            allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
             className="rounded-lg"
           ></iframe>
         </div>
