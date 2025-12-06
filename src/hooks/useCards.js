@@ -39,12 +39,17 @@ export const useCards = () => {
   };
 
   const addCard = async (cardData) => {
+    // Validate that user_id is provided
+    if (!cardData.user_id) {
+      throw new Error('User ID is required to create a card. Please log in again.');
+    }
+    
     const result = await query(
       `INSERT INTO cards (user_id, title, description, category, image_url, music_url, music_file_url, card_id, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
        RETURNING *`,
       [
-        cardData.user_id || null,  // Handle cases where user_id might not be set
+        cardData.user_id,
         cardData.title,
         cardData.description,
         cardData.category,

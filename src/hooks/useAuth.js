@@ -25,13 +25,15 @@ export const useAuth = () => {
     };
   }, []);
 
-  const signUp = async (email, password) => {
-    const user = await authSignUp(email, password);
+  // Opens Netlify Identity signup modal
+  const signUp = async () => {
+    const user = await authSignUp();
     return user;
   };
 
-  const signIn = async (email, password) => {
-    const user = await authSignIn(email, password);
+  // Opens Netlify Identity login modal
+  const signIn = async () => {
+    const user = await authSignIn();
     return user;
   };
 
