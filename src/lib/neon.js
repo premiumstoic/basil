@@ -39,7 +39,7 @@ export const sql = createNeonClient();
 // Helper function to execute queries safely
 export const query = async (queryString, params = []) => {
   if (!sql) {
-    const errorMessage = !import.meta.env.VITE_NEON_DATABASE_URL
+    const errorMessage = !databaseUrl
       ? 'Neon database is not configured. The VITE_NEON_DATABASE_URL environment variable was not set during the build. Please check your Netlify environment variables settings and rebuild the site.'
       : 'Neon database client failed to initialize. Check the console for details.';
     throw new Error(errorMessage);
