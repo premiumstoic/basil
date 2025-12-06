@@ -20,13 +20,13 @@ export const signUp = async () => {
       netlifyIdentity.close();
       resolve(user);
     };
-    
+
     const handleError = (err) => {
       netlifyIdentity.off('signup', handleSignup);
       netlifyIdentity.off('error', handleError);
       reject(err);
     };
-    
+
     netlifyIdentity.on('signup', handleSignup);
     netlifyIdentity.on('error', handleError);
     netlifyIdentity.open('signup');
@@ -40,15 +40,16 @@ export const signIn = async () => {
       netlifyIdentity.off('login', handleLogin);
       netlifyIdentity.off('error', handleError);
       netlifyIdentity.close();
+      window.location.reload(); // Force reload to ensure fresh state
       resolve(user);
     };
-    
+
     const handleError = (err) => {
       netlifyIdentity.off('login', handleLogin);
       netlifyIdentity.off('error', handleError);
       reject(err);
     };
-    
+
     netlifyIdentity.on('login', handleLogin);
     netlifyIdentity.on('error', handleError);
     netlifyIdentity.open('login');
@@ -65,7 +66,7 @@ export const onAuthStateChange = (callback) => {
   netlifyIdentity.on('login', callback);
   netlifyIdentity.on('logout', callback);
   netlifyIdentity.on('init', callback);
-  
+
   // Return unsubscribe function
   return () => {
     netlifyIdentity.off('login', callback);

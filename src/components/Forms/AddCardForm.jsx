@@ -50,7 +50,15 @@ export default function AddCardForm() {
       }
 
       // Upload image
-      const imageUrl = await uploadImage(image);
+      let imageUrl;
+      try {
+        console.log('Uploading image:', image);
+        imageUrl = await uploadImage(image);
+        console.log('Image uploaded:', imageUrl);
+      } catch (uploadError) {
+        console.error('Image upload failed:', uploadError);
+        throw new Error(`Image upload failed: ${uploadError.message}`);
+      }
 
       // Upload music file if selected
       let musicFileUrl = null;

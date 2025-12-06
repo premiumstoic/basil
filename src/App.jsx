@@ -7,6 +7,7 @@ import SignUp from './components/Auth/SignUp';
 import CardGrid from './components/Cards/CardGrid';
 import CardDetail from './components/Cards/CardDetail';
 import AddCardForm from './components/Forms/AddCardForm';
+import ErrorBoundary from './components/Layout/ErrorBoundary';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -50,7 +51,9 @@ function App() {
               path="/add"
               element={
                 <ProtectedRoute>
-                  <AddCardForm />
+                  <ErrorBoundary>
+                    <AddCardForm />
+                  </ErrorBoundary>
                 </ProtectedRoute>
               }
             />
