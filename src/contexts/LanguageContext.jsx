@@ -57,7 +57,7 @@ export const translations = {
             noCards: 'No cards for Reyhan yet',
             noCardsDesc: 'Help Reyhan build her collection by adding the first card!',
             title: "Reyhan's Card Collection",
-            desc: 'A collection of cultural moments for Reyhan',
+            desc: 'A collection of moments for Reyhan',
         },
         card: {
             hasMusic: 'Has music',
