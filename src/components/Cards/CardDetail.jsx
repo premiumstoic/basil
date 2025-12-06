@@ -98,10 +98,10 @@ export default function CardDetail() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-ink/20 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl p-8 shadow-xl">
+      <div className="fixed inset-0 bg-ink/20 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-xl">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-sans">{t('detail.loading')}</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-sans">{t('detail.loading')}</p>
         </div>
       </div>
     );
@@ -109,15 +109,15 @@ export default function CardDetail() {
 
   if (error) {
     return (
-      <div className="fixed inset-0 bg-ink/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl p-8 max-w-md shadow-xl border border-gray-100">
-          <h2 className="text-2xl font-serif font-semibold text-red-600 mb-4">{t('detail.notFound')}</h2>
-          <p className="text-gray-600 mb-6 font-sans">
+      <div className="fixed inset-0 bg-ink/20 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md shadow-xl border border-gray-100 dark:border-gray-700">
+          <h2 className="text-2xl font-serif font-semibold text-red-600 dark:text-red-400 mb-4">{t('detail.notFound')}</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6 font-sans">
             {t('detail.notFoundDesc')}
           </p>
           <Link
             to="/"
-            className="block w-full py-3 bg-ink text-white rounded-lg hover:bg-gray-800 transition text-center font-sans font-medium"
+            className="block w-full py-3 bg-ink dark:bg-ink-dark text-white dark:text-ink rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition text-center font-sans font-medium"
           >
             {t('detail.backToHome')}
           </Link>
@@ -170,7 +170,7 @@ export default function CardDetail() {
         </div>
 
         {/* Details Section - White card below */}
-        <div className="bg-white rounded-t-2xl -mt-4 relative z-10 shadow-2xl border-t border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-t-2xl -mt-4 relative z-10 shadow-2xl border-t border-gray-100 dark:border-gray-700">
 
           <div className="p-8 sm:p-10">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 gap-4">
@@ -182,7 +182,7 @@ export default function CardDetail() {
               )}
             </div>
 
-            <p className="text-gray-800 text-lg leading-relaxed mb-8 whitespace-pre-wrap font-serif">
+            <p className="text-gray-800 dark:text-gray-200 text-lg leading-relaxed mb-8 whitespace-pre-wrap font-serif">
               {card.description}
             </p>
 
@@ -200,9 +200,9 @@ export default function CardDetail() {
 
               {/* QR Code Section */}
               {qrCodeUrl && (
-                <div className="flex flex-col items-center bg-gray-50 rounded-xl p-6 border border-gray-100">
-                  <div className="flex items-center gap-2 mb-4 text-ink font-serif font-bold">
-                    <QrCode size={20} className="text-purple-600" />
+                <div className="flex flex-col items-center bg-gray-50 dark:bg-gray-700 rounded-xl p-6 border border-gray-100 dark:border-gray-600">
+                  <div className="flex items-center gap-2 mb-4 text-ink dark:text-ink-dark font-serif font-bold">
+                    <QrCode size={20} className="text-purple-600 dark:text-purple-400" />
                     <h3>{t('detail.share')}</h3>
                   </div>
 
@@ -214,13 +214,13 @@ export default function CardDetail() {
                     />
                   </div>
 
-                  <p className="text-sm text-gray-500 font-sans mb-4 text-center max-w-xs">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-sans mb-4 text-center max-w-xs">
                     {t('detail.scanToView')}
                   </p>
 
                   <button
                     onClick={downloadQRCode}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-ink rounded-lg transition text-sm font-medium shadow-sm hover:shadow"
+                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 text-ink dark:text-ink-dark rounded-lg transition text-sm font-medium shadow-sm hover:shadow"
                   >
                     <Download size={16} />
                     {t('detail.downloadQr')}
@@ -244,18 +244,18 @@ export default function CardDetail() {
           onClick={(e) => e.stopPropagation()}
         >
           <div
-            className="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl border border-gray-100"
+            className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-gray-700"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-serif font-bold text-ink mb-3">Delete Card?</h3>
-            <p className="text-gray-600 font-sans mb-6">
+            <h3 className="text-xl font-serif font-bold text-ink dark:text-ink-dark mb-3">Delete Card?</h3>
+            <p className="text-gray-600 dark:text-gray-400 font-sans mb-6">
               Are you sure you want to delete this card? This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={deleting}
-                className="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-sans font-medium disabled:opacity-50"
+                className="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition font-sans font-medium disabled:opacity-50"
               >
                 Cancel
               </button>

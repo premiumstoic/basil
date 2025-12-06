@@ -90,26 +90,26 @@ export default function AddCardForm() {
   };
 
   return (
-    <div className="min-h-screen bg-paper py-16 px-4 font-sans">
+    <div className="min-h-screen bg-paper dark:bg-paper-dark py-12 sm:py-16 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 sm:p-10">
-          <h1 className="text-4xl font-serif font-medium text-ink mb-3 tracking-tight">{t('addCard.pageTitle')}</h1>
-          <p className="text-gray-600 mb-10 font-sans">{t('addCard.pageDesc')}</p>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sm:p-8 md:p-10">
+          <h1 className="text-3xl sm:text-4xl font-serif font-medium text-ink dark:text-ink-dark mb-3 tracking-tight">{t('addCard.pageTitle')}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-8 sm:mb-10 font-sans">{t('addCard.pageDesc')}</p>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm flex items-center">
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm flex items-center">
               <span className="mr-2">⚠️</span> {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* Image Upload Section */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 tracking-wide uppercase">
                 {t('addCard.labels.illustration')} *
               </label>
               <div
-                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${imagePreview ? 'border-purple-200 bg-purple-50/30' : 'border-gray-200 hover:border-purple-400'
+                className={`border-2 border-dashed rounded-xl p-6 sm:p-8 text-center transition-all duration-300 ${imagePreview ? 'border-purple-200 dark:border-purple-700 bg-purple-50/30 dark:bg-purple-900/20' : 'border-gray-200 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500'
                   }`}
               >
                 {imagePreview ? (
@@ -125,19 +125,19 @@ export default function AddCardForm() {
                         setImage(null);
                         setImagePreview(null);
                       }}
-                      className="absolute -top-3 -right-3 p-1.5 bg-white text-gray-500 rounded-full shadow-md hover:text-red-600 border border-gray-100 transition"
+                      className="absolute -top-3 -right-3 p-1.5 bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full shadow-md hover:text-red-600 dark:hover:text-red-400 border border-gray-100 dark:border-gray-600 transition"
                     >
                       <X size={16} />
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-4 py-4">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 text-gray-400 mb-2">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 dark:text-gray-500 mb-2">
                       <Upload size={32} />
                     </div>
                     <div>
                       <label className="cursor-pointer">
-                        <span className="px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:border-purple-400 hover:text-purple-700 transition font-medium shadow-sm inline-block">
+                        <span className="px-6 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-700 dark:hover:text-purple-400 transition font-medium shadow-sm inline-block">
                           {t('addCard.buttons.upload')}
                         </span>
                         <input
@@ -148,7 +148,7 @@ export default function AddCardForm() {
                           required
                         />
                       </label>
-                      <p className="mt-3 text-sm text-gray-500 font-sans">PNG, JPG, GIF up to 5MB</p>
+                      <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 font-sans">PNG, JPG, GIF up to 5MB</p>
                     </div>
                   </div>
                 )}
@@ -157,14 +157,14 @@ export default function AddCardForm() {
 
             {/* Title Input */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 tracking-wide uppercase">
                 {t('addCard.labels.title')} *
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white transition font-serif text-lg text-ink placeholder-gray-400"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white dark:focus:bg-gray-600 transition font-serif text-lg text-ink dark:text-ink-dark placeholder-gray-400 dark:placeholder-gray-500"
                 placeholder={t('addCard.placeholders.title')}
                 required
               />
@@ -172,14 +172,14 @@ export default function AddCardForm() {
 
             {/* Description Input */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 tracking-wide uppercase">
                 {t('addCard.labels.description')} *
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white transition font-serif text-lg text-ink placeholder-gray-400 resize-none leading-relaxed"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white dark:focus:bg-gray-600 transition font-serif text-lg text-ink dark:text-ink-dark placeholder-gray-400 dark:placeholder-gray-500 resize-none leading-relaxed"
                 placeholder={t('addCard.placeholders.description')}
                 required
               />
@@ -187,7 +187,7 @@ export default function AddCardForm() {
 
             {/* Category Select */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3 tracking-wide uppercase">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 tracking-wide uppercase">
                 {t('addCard.labels.category')}
               </label>
               <div className="relative">
@@ -196,7 +196,7 @@ export default function AddCardForm() {
                   list="categories"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white transition font-sans text-gray-700"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-0 focus:border-purple-500 focus:bg-white dark:focus:bg-gray-600 transition font-sans text-gray-700 dark:text-gray-300"
                   placeholder={t('addCard.placeholders.category')}
                 />
                 <datalist id="categories">
@@ -208,19 +208,19 @@ export default function AddCardForm() {
             </div>
 
             {/* Music Section */}
-            <div className="pt-6 border-t border-gray-100">
-              <label className="block text-sm font-semibold text-gray-700 mb-4 tracking-wide uppercase flex items-center">
-                <MusicIcon size={18} className="mr-2 text-purple-600" />
+            <div className="pt-6 border-t border-gray-100 dark:border-gray-700">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 tracking-wide uppercase flex items-center">
+                <MusicIcon size={18} className="mr-2 text-purple-600 dark:text-purple-400" />
                 {t('addCard.labels.music')}
               </label>
 
-              <div className="flex space-x-4 mb-6">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mb-6">
                 <button
                   type="button"
                   onClick={() => setMusicType('none')}
                   className={`flex-1 py-3 px-4 rounded-lg font-medium transition text-sm ${musicType === 'none'
-                    ? 'bg-gray-800 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-800 dark:bg-gray-600 text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   {t('addCard.buttons.noMusic')}
@@ -230,7 +230,7 @@ export default function AddCardForm() {
                   onClick={() => setMusicType('url')}
                   className={`flex-1 py-3 px-4 rounded-lg font-medium transition text-sm ${musicType === 'url'
                     ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   {t('addCard.buttons.url')}
@@ -240,7 +240,7 @@ export default function AddCardForm() {
                   onClick={() => setMusicType('file')}
                   className={`flex-1 py-3 px-4 rounded-lg font-medium transition text-sm ${musicType === 'file'
                     ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                 >
                   {t('addCard.buttons.upload')}
@@ -252,13 +252,13 @@ export default function AddCardForm() {
                   type="url"
                   value={musicUrl}
                   onChange={(e) => setMusicUrl(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-0 focus:border-purple-500 transition font-sans"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-0 focus:border-purple-500 transition font-sans text-ink dark:text-ink-dark"
                   placeholder={t('addCard.placeholders.musicUrl')}
                 />
               )}
 
               {musicType === 'file' && (
-                <div className="border border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
+                <div className="border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center bg-gray-50 dark:bg-gray-700">
                   <input
                     type="file"
                     id="music-file"
@@ -266,7 +266,7 @@ export default function AddCardForm() {
                     onChange={handleMusicFileChange}
                     className="hidden"
                   />
-                  <label htmlFor="music-file" className="cursor-pointer text-purple-600 hover:text-purple-700 font-medium flex flex-col items-center">
+                  <label htmlFor="music-file" className="cursor-pointer text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium flex flex-col items-center">
                     <MusicIcon size={24} className="mb-2 opacity-50" />
                     {musicFile ? musicFile.name : t('addCard.buttons.chooseFile')}
                   </label>
@@ -278,7 +278,7 @@ export default function AddCardForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-ink text-white rounded-xl hover:bg-gray-800 transition font-sans font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-8 tracking-wide transform active:scale-[0.99]"
+              className="w-full py-4 bg-ink dark:bg-purple-600 text-white rounded-xl hover:bg-gray-800 dark:hover:bg-purple-700 transition font-sans font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed mt-8 tracking-wide transform active:scale-[0.99]"
             >
               {loading ? (
                 <span className="flex items-center justify-center">

@@ -10,6 +10,7 @@ export const translations = {
             login: 'Login',
             signup: 'Sign Up',
             logout: 'Logout',
+            settings: 'Settings',
         },
         login: {
             welcomeTitle: 'Welcome Back',
@@ -79,6 +80,16 @@ export const translations = {
             external: 'Listen on external platform',
             audio: 'Audio',
         },
+        settings: {
+            title: 'Settings',
+            theme: 'Theme',
+            language: 'Language',
+            system: 'System',
+            light: 'Light',
+            dark: 'Dark',
+            about: 'About',
+            aboutDesc: "A collection of cultural moments for Reyhan",
+        },
     },
     tr: {
         navbar: {
@@ -87,6 +98,7 @@ export const translations = {
             login: 'Giriş Yap',
             signup: 'Kayıt Ol',
             logout: 'Çıkış Yap',
+            settings: 'Ayarlar',
         },
         login: {
             welcomeTitle: 'Tekrar Hoşgeldiniz',
@@ -155,6 +167,16 @@ export const translations = {
             youtube: 'YouTube\'da İzle',
             external: 'Harici platformda dinle',
             audio: 'Ses Dosyası',
+        },
+        settings: {
+            title: 'Ayarlar',
+            theme: 'Tema',
+            language: 'Dil',
+            system: 'Sistem',
+            light: 'Açık',
+            dark: 'Koyu',
+            about: 'Hakkında',
+            aboutDesc: "Reyhan için özel seçilmiş anlar",
         },
     },
 };

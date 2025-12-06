@@ -5,6 +5,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -14,8 +15,11 @@ export default {
       colors: {
         paper: '#F9F5F1', // Warm bisque/off-white (heavy bond paper)
         ink: '#1C1917', // Warm charcoal
+        // Dark mode variants
+        'paper-dark': '#1C1917', // Dark background
+        'ink-dark': '#F9F5F1', // Light text for dark mode
         purple: {
-          50: '#F5F3FF', // Existing, but can be tweaked if needed
+          50: '#F5F3FF',
           100: '#EDE9FE',
           500: '#8B5CF6',
           600: '#7C3AED',
