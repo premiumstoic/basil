@@ -22,8 +22,8 @@ export const translations = {
             openButton: 'Open Sign Up',
         },
         addCard: {
-            pageTitle: 'Add New Card',
-            pageDesc: 'Share a cultural moment with your friends',
+            pageTitle: 'Add New Card for Reyhan',
+            pageDesc: 'Share a cultural moment with Reyhan',
             labels: {
                 illustration: 'Illustration',
                 chooseImage: 'Choose an image',
@@ -33,8 +33,8 @@ export const translations = {
                 music: 'Add Music (optional)',
             },
             placeholders: {
-                title: 'e.g., Miyazaki\'s Wind Philosophy',
-                description: 'Share your thoughts and insights...',
+                title: "e.g., Miyazaki's Wind Philosophy",
+                description: 'Tell Reyhan your thoughts...',
                 category: 'e.g., Film, Literature, Art, Music',
                 musicUrl: 'Spotify, YouTube, or SoundCloud URL',
             },
@@ -51,11 +51,11 @@ export const translations = {
             },
         },
         home: {
-            loading: 'Loading cards...',
-            noCards: 'No cards yet',
-            noCardsDesc: 'Be the first to share a cultural card!',
-            title: 'Cultural Cards Collection',
-            desc: 'Discover moments of culture, one card at a time',
+            loading: 'Loading Reyhan\'s cards...',
+            noCards: 'No cards for Reyhan yet',
+            noCardsDesc: 'Help Reyhan build her collection by adding the first card!',
+            title: "Reyhan's Card Collection",
+            desc: 'A collection of cultural moments for Reyhan',
         },
         card: {
             hasMusic: 'Has music',
@@ -66,7 +66,7 @@ export const translations = {
             loading: 'Loading card...',
             notFound: 'Card Not Found',
             notFoundDesc: "The card you're looking for doesn't exist or has been removed.",
-            backToHome: 'Back to All Cards',
+            backToHome: "Back to Reyhan's Collection",
         },
         player: {
             spotify: 'Listen on Spotify',
@@ -94,8 +94,8 @@ export const translations = {
             openButton: 'Kayıt Ekranını Aç',
         },
         addCard: {
-            pageTitle: 'Yeni Kart Ekle',
-            pageDesc: 'Arkadaşlarınla kültürel bir an paylaş',
+            pageTitle: 'Reyhan İçin Kart Ekle',
+            pageDesc: 'Reyhan ile kültürel bir an paylaş',
             labels: {
                 illustration: 'İllüstrasyon',
                 chooseImage: 'Resim seç',
@@ -106,7 +106,7 @@ export const translations = {
             },
             placeholders: {
                 title: 'ör. Sezai Karakoç - Monna Rosa',
-                description: 'Düşüncelerini ve içgörülerini paylaş...',
+                description: "Reyhan'a düşüncelerini anlat...",
                 category: 'ör. Film, Edebiyat, Sanat, Müzik',
                 musicUrl: 'Spotify, YouTube veya SoundCloud bağlantısı',
             },
@@ -124,10 +124,10 @@ export const translations = {
         },
         home: {
             loading: 'Kartlar yükleniyor...',
-            noCards: 'Henüz kart yok',
-            noCardsDesc: 'İlk kültürel kartı paylaşan sen ol!',
-            title: 'Kültürel Kartlar Koleksiyonu',
-            desc: 'Kültür anlarını keşfet, her seferinde bir kart',
+            noCards: 'Reyhan için henüz kart yok',
+            noCardsDesc: "Reyhan'a ilk kartı hediye ederek koleksiyonuna başla!",
+            title: "Reyhan'ın Kart Koleksiyonu",
+            desc: 'Reyhan için özel seçilmiş kültürel anlar',
         },
         card: {
             hasMusic: 'Müzik var',
@@ -138,7 +138,7 @@ export const translations = {
             loading: 'Kart yükleniyor...',
             notFound: 'Kart Bulunamadı',
             notFoundDesc: 'Aradığınız kart mevcut değil veya silinmiş.',
-            backToHome: 'Kartlara Dön',
+            backToHome: "Reyhan'ın Koleksiyonuna Dön",
         },
         player: {
             spotify: 'Spotify\'da Dinle',
