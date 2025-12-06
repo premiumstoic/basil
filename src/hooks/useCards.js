@@ -1,6 +1,6 @@
 // src/hooks/useCards.js
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { query } from '../lib/neon';
 
 export const useCards = () => {
   const [cards, setCards] = useState([]);
@@ -8,21 +8,12 @@ export const useCards = () => {
   const [error, setError] = useState(null);
 
   const fetchCards = async () => {
-    if (!supabase) {
-      setLoading(false);
-      setError('Supabase is not configured. Please set up environment variables.');
-      return;
-    }
-
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('cards')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setCards(data || []);
+      const result = await query(
+        'SELECT * FROM cards ORDER BY created_at DESC'
+      );
+      setCards(result || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -32,66 +23,52 @@ export const useCards = () => {
 
   useEffect(() => {
     fetchCards();
-
-    if (!supabase) return;
-
-    // Subscribe to real-time changes
-    const channel = supabase
-      .channel('cards-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'cards' },
-        () => {
-          fetchCards();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      if (supabase) {
-        supabase.removeChannel(channel);
-      }
-    };
   }, []);
 
   const getCardById = async (cardId) => {
-    if (!supabase) {
-      throw new Error('Supabase is not configured. Please set up environment variables.');
+    const result = await query(
+      'SELECT * FROM cards WHERE card_id = $1 LIMIT 1',
+      [cardId]
+    );
+    
+    if (!result || result.length === 0) {
+      throw new Error('Card not found');
     }
-    const { data, error } = await supabase
-      .from('cards')
-      .select('*')
-      .eq('card_id', cardId)
-      .single();
-
-    if (error) throw error;
-    return data;
+    
+    return result[0];
   };
 
   const addCard = async (cardData) => {
-    if (!supabase) {
-      throw new Error('Supabase is not configured. Please set up environment variables.');
+    // Validate that user_id is provided
+    if (!cardData.user_id) {
+      throw new Error('User ID is required to create a card. Please log in again.');
     }
-    const { data, error } = await supabase
-      .from('cards')
-      .insert([cardData])
-      .select()
-      .single();
+    
+    const result = await query(
+      `INSERT INTO cards (user_id, title, description, category, image_url, music_url, music_file_url, card_id, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+       RETURNING *`,
+      [
+        cardData.user_id,
+        cardData.title,
+        cardData.description,
+        cardData.category,
+        cardData.image_url,
+        cardData.music_url,
+        cardData.music_file_url,
+        cardData.card_id,
+      ]
+    );
 
-    if (error) throw error;
-    return data;
+    if (!result || result.length === 0) {
+      throw new Error('Failed to create card');
+    }
+
+    return result[0];
   };
 
   const deleteCard = async (id) => {
-    if (!supabase) {
-      throw new Error('Supabase is not configured. Please set up environment variables.');
-    }
-    const { error } = await supabase
-      .from('cards')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
+    await query('DELETE FROM cards WHERE id = $1', [id]);
   };
 
   const generateCardId = () => {
