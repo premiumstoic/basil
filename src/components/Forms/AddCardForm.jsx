@@ -7,7 +7,7 @@ import { useCards } from '../../hooks/useCards';
 import { uploadImage, uploadAudio } from '../../lib/storage';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-const CATEGORIES = ['Film', 'Edebiyat', 'Sanat', 'Müzik', 'Felsefe', 'Tarih'];
+
 
 export default function AddCardForm() {
   const { user } = useAuth();
@@ -200,7 +200,7 @@ export default function AddCardForm() {
                   placeholder={t('addCard.placeholders.category')}
                 />
                 <datalist id="categories">
-                  {CATEGORIES.map((cat) => (
+                  {t('addCard.categories').map((cat) => (
                     <option key={cat} value={cat} />
                   ))}
                 </datalist>

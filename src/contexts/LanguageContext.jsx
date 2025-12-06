@@ -23,7 +23,7 @@ export const translations = {
         },
         addCard: {
             pageTitle: 'Add New Card for Reyhan',
-            pageDesc: 'Share a cultural moment with Reyhan',
+            pageDesc: 'Share a moment with Reyhan',
             labels: {
                 illustration: 'Illustration',
                 chooseImage: 'Choose an image',
@@ -46,6 +46,7 @@ export const translations = {
                 submit: 'Create Card',
                 submitting: 'Creating Card...',
             },
+            categories: ['Film', 'Literature', 'Art', 'Music', 'Philosophy', 'History', 'Nature', 'Memories'],
             errors: {
                 noImage: 'Please upload an image',
             },
@@ -118,6 +119,7 @@ export const translations = {
                 submit: 'Kart Oluştur',
                 submitting: 'Kart Oluşturuluyor...',
             },
+            categories: ['Film', 'Edebiyat', 'Sanat', 'Müzik', 'Felsefe', 'Tarih', 'Doğa', 'Hatıralar'],
             errors: {
                 noImage: 'Lütfen bir resim yükleyin',
             },

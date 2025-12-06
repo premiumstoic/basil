@@ -156,7 +156,7 @@ export default function CardDetail() {
 
           <div className="pt-6 border-t border-gray-100 text-xs text-gray-400 font-mono flex justify-between items-center">
             <span>ID: {card.card_id}</span>
-            <span>Reyhanlı Kartlar Collection</span>
+            <span>Reyhan's Collection</span>
           </div>
         </div>
       </div>
