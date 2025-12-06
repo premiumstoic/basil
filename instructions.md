@@ -169,7 +169,7 @@ Include:
 - Features list
 - Tech stack
 - Setup instructions (Supabase SQL + Storage)
-- Deployment guide (Netlify)
+- Deployment guide (Vercel)
 - QR code usage
 - Troubleshooting section
 
