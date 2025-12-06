@@ -135,22 +135,60 @@
         function renderCard(item) {
             const cardElement = document.getElementById('card');
             
+            // Clear existing content
+            cardElement.innerHTML = '';
+            
             if (item) {
-                cardElement.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" class="card-image">
-                    <div class="card-content">
-                        <h1 class="card-title">${item.title}</h1>
-                        <p class="card-description">${item.description}</p>
-                    </div>
-                `;
+                // Create image element
+                const img = document.createElement('img');
+                img.className = 'card-image';
+                img.src = item.image;
+                img.alt = item.title;
+                
+                // Create content container
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'card-content';
+                
+                // Create title
+                const title = document.createElement('h1');
+                title.className = 'card-title';
+                title.textContent = item.title;
+                
+                // Create description
+                const description = document.createElement('p');
+                description.className = 'card-description';
+                description.textContent = item.description;
+                
+                // Assemble the card
+                contentDiv.appendChild(title);
+                contentDiv.appendChild(description);
+                cardElement.appendChild(img);
+                cardElement.appendChild(contentDiv);
             } else {
-                cardElement.innerHTML = `
-                    <div class="not-found">
-                        <div class="not-found-icon">🔍</div>
-                        <h1 class="not-found-title">Item Not Found</h1>
-                        <p class="not-found-message">Sorry, we couldn't find the item you're looking for. Please check the ID and try again.</p>
-                    </div>
-                `;
+                // Create not found container
+                const notFoundDiv = document.createElement('div');
+                notFoundDiv.className = 'not-found';
+                
+                // Create icon
+                const icon = document.createElement('div');
+                icon.className = 'not-found-icon';
+                icon.textContent = '🔍';
+                
+                // Create title
+                const title = document.createElement('h1');
+                title.className = 'not-found-title';
+                title.textContent = 'Item Not Found';
+                
+                // Create message
+                const message = document.createElement('p');
+                message.className = 'not-found-message';
+                message.textContent = "Sorry, we couldn't find the item you're looking for. Please check the ID and try again.";
+                
+                // Assemble the not found message
+                notFoundDiv.appendChild(icon);
+                notFoundDiv.appendChild(title);
+                notFoundDiv.appendChild(message);
+                cardElement.appendChild(notFoundDiv);
             }
         }
 
