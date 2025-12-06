@@ -112,11 +112,11 @@ netlify dev
      - Scope: Select "All deploy contexts" or at least "Production"
    - Add another variable:
      - Key: `VITE_NETLIFY_SITE_URL`
-     - Value: Your Netlify site URL (you can use a placeholder initially, like `https://my-site.netlify.app`, and update it after deployment)
+     - Value: Your Netlify site URL (you can use a placeholder initially, like `https://your-app-name.netlify.app`, and update it after deployment)
      - Scope: Select "All deploy contexts" or at least "Production"
 7. Deploy!
 8. After first deployment, update `VITE_NETLIFY_SITE_URL` with your actual Netlify URL if you used a placeholder
-9. If you update environment variables, trigger a new deploy with "Clear cache and deploy site"
+9. **⚠️ CRITICAL: If you update environment variables after deployment, you MUST trigger a new deploy with "Clear cache and deploy site"** - environment variables are baked into the build, so changing them requires rebuilding
 
 **Note:** Vite requires environment variables at build time, not runtime. If you see "Neon database is not configured" error, check the Troubleshooting section.
 
