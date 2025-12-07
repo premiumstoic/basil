@@ -58,7 +58,7 @@ export const translations = {
             noCards: 'No cards for Reyhan yet',
             noCardsDesc: 'Help Reyhan build her collection by adding the first card!',
             title: "Reyhan's Card Collection",
-            desc: 'A collection of moments for Reyhan',
+            desc: 'A collection of cards for Reyhan',
         },
         card: {
             hasMusic: 'Has music',
@@ -89,7 +89,7 @@ export const translations = {
             light: 'Light',
             dark: 'Dark',
             about: 'About',
-            aboutDesc: "A collection of cultural moments for Reyhan",
+            aboutDesc: "A collection of cards for Reyhan",
         },
     },
     tr: {
@@ -113,7 +113,7 @@ export const translations = {
         },
         addCard: {
             pageTitle: 'Reyhan İçin Kart Ekle',
-            pageDesc: 'Reyhan ile bir an paylaş',
+            pageDesc: 'Reyhan ile bir kart paylaş',
             labels: {
                 illustration: 'İllüstrasyon',
                 chooseImage: 'Resim seç',
@@ -178,7 +178,7 @@ export const translations = {
             light: 'Açık',
             dark: 'Koyu',
             about: 'Hakkında',
-            aboutDesc: "Reyhan için özel seçilmiş anlar",
+            aboutDesc: "Reyhan için özel seçilmiş kartlar",
         },
     },
 };
