@@ -148,6 +148,7 @@ export const translations = {
             noCardsDesc: "Reyhan'a ilk kartı hediye ederek koleksiyonuna başla!",
             title: "Reyhan'ın Kart Koleksiyonu",
             desc: 'Reyhan için özel seçilmiş anlar',
+            loadMore: 'Daha Fazla Yükle',
         },
         card: {
             hasMusic: 'Müzik var',

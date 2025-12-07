@@ -1,11 +1,28 @@
 // src/components/Cards/CardGrid.jsx
+import { useState, useEffect } from 'react';
 import { useCards } from '../../hooks/useCards';
 import { useLanguage } from '../../contexts/LanguageContext';
 import CardItem from './CardItem';
+import { ChevronDown } from 'lucide-react';
 
 export default function CardGrid() {
   const { cards, loading, error } = useCards();
   const { t } = useLanguage();
+  const [displayedCards, setDisplayedCards] = useState([]);
+  const [page, setPage] = useState(1);
+  const CARDS_PER_PAGE = 8;
+
+  useEffect(() => {
+    if (cards.length > 0) {
+      setDisplayedCards(cards.slice(0, page * CARDS_PER_PAGE));
+    }
+  }, [cards, page]);
+
+  const loadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const hasMore = displayedCards.length < cards.length;
 
   if (loading) {
     return (
@@ -52,11 +69,23 @@ export default function CardGrid() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-          {cards.map((card) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 mb-12">
+          {displayedCards.map((card) => (
             <CardItem key={card.id} card={card} />
           ))}
         </div>
+
+        {hasMore && (
+          <div className="text-center pb-12">
+            <button
+              onClick={loadMore}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-ink dark:text-ink-dark font-medium"
+            >
+              <span>{t('home.loadMore') || 'Load More'}</span>
+              <ChevronDown size={18} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -37,6 +37,7 @@ export default function CardItem({ card }) {
         <img
           src={card.image_url}
           alt={card.title}
+          loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
