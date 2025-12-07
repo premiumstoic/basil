@@ -59,6 +59,7 @@ export const translations = {
             noCardsDesc: 'Help Reyhan build her collection by adding the first card!',
             title: "Reyhan's Card Collection",
             desc: 'A collection of cards for Reyhan',
+            loadMore: 'Load More',
         },
         card: {
             hasMusic: 'Has music',
