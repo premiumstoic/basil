@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext();
 
@@ -186,7 +186,14 @@ export const translations = {
 };
 
 export function LanguageProvider({ children }) {
-    const [language, setLanguage] = useState('tr'); // Default to Turkish as requested
+    const [language, setLanguage] = useState(() => {
+        const savedLanguage = localStorage.getItem('language');
+        return savedLanguage || 'tr';
+    });
+
+    useEffect(() => {
+        localStorage.setItem('language', language);
+    }, [language]);
 
     const toggleLanguage = () => {
         setLanguage((prev) => (prev === 'en' ? 'tr' : 'en'));
